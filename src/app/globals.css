@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+:root {
+  /* Brand */
+  --primary-green: #1d3d2e;
+  --primary-green-deep: #12261c; /* darker shade of primary green (derived) */
+  --primary-gold: #b07e0a;
+  --gold-bright: #e0a920; /* lighter gold for text on dark backgrounds */
+
+  /* Text */
+  --text-dark: #212326;
+  --text-grey: #969697;
+  --nav-text: #1c2721;
+  --card-heading: #012315;
+
+  /* Examination badges */
+  --exam-waec: #1b3f8f;
+  --exam-neco: #1f5a3c;
+  --exam-jamb: #2f6b3a;
+  --exam-gce: #2a7a52;
+  --exam-cxc: #0f4c81;
+  --exam-cape: #7a5a12;
+
+  /* Academy accents */
+  --academy-navy: #0f2f5c;
+
+  /* Chapter accents */
+  --chapter-men: #12397a;
+
+  /* Academy field accents */
+  --field-theology: #0f3d2f;
+  --field-arts: #17327a;
+  --field-science: #c98a14;
+  --field-social: #8e1f3f;
+  --field-tech: #0f6b6b;
+  --field-life: #5a2d91;
+
+  /* Library collection accents */
+  --collection-purpose: #1d3d2e;
+  --collection-faith: #b07e0a;
+  --collection-wisdom: #0f5c5c;
+  --collection-hope: #5b2a86;
+  --collection-life: #1f4e9c;
+  --collection-music: #a52a2a;
+
+  /* Backgrounds */
+  --background-cream: #faf6ee;
+  --white-color: #ffffff;
+}
+
+/* Tailwind utilities, e.g. bg-primary-green, text-nav-text, border-primary-gold */
+@theme inline {
+  --color-primary-green: var(--primary-green);
+  --color-primary-green-deep: var(--primary-green-deep);
+  --color-primary-gold: var(--primary-gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-text-dark: var(--text-dark);
+  --color-text-grey: var(--text-grey);
+  --color-nav-text: var(--nav-text);
+  --color-card-heading: var(--card-heading);
+  --color-cream: var(--background-cream);
+  --color-white-color: var(--white-color);
+  --font-heading: var(--font-playfair);
+  --font-script: var(--font-dancing);
+  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-geist-sans);
+}
+
+/* Horizontal page gutter — apply to the inner element of every section */
+@utility wrapper {
+  margin: 0 16px;
+
+  @media (min-width: 768px) {
+    margin: 0 32px;
+  }
+
+  @media (min-width: 1024px) {
+    margin: 0 40px;
+  }
+
+  @media (min-width: 1280px) {
+    margin: 0 40px;
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 1350px;
+    margin: 0 auto;
+  }
+}
+
+/* Wider gutter variant for full-width bands such as the footer */
+@utility wrapper-wide {
+  margin: 0 16px;
+
+  @media (min-width: 768px) {
+    margin: 0 32px;
+  }
+
+  @media (min-width: 1024px) {
+    margin: 0 40px;
+  }
+
+  @media (min-width: 1800px) {
+    max-width: 1760px;
+    margin: 0 auto;
+  }
+}
+
+body {
+  background: var(--background-cream);
+  color: var(--text-dark);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Centred, narrower column that keeps the same side gutters as `wrapper` */
+@utility wrapper-narrow {
+  width: min(calc(100% - 32px), 896px);
+  margin-inline: auto;
+
+  @media (min-width: 768px) {
+    width: min(calc(100% - 64px), 896px);
+  }
+
+  @media (min-width: 1024px) {
+    width: min(calc(100% - 80px), 896px);
+  }
+}
+
+/* Smooth scrolling for in-page links (Home dropdown: Vision & Mission, Statement of Faith) */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

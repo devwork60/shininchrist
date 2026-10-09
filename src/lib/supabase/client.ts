@@ -1,6 +1,6 @@
 import { createBrowserClient } from "@supabase/ssr";
 
-/** Supabase client for the browser (client components). Uses only the public publishable key. */
+/** Supabase client for the browser (client components). Returns null gracefully if public keys are omitted. */
 export const createClient = () => {
   const url =
     process.env.NEXT_PUBLIC_SUPABASE_URL ||
@@ -12,5 +12,6 @@ export const createClient = () => {
     process.env.SUPABASE_PUBLISHABLE_KEY ||
     "";
 
+  if (!url || !key) return null;
   return createBrowserClient(url, key);
 };

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import clsx from "clsx";
 import AuthIcons from "@/components/icons/AuthIcons";
-import { createClient } from "@/lib/supabase/client";
 
 interface GoogleSignInButtonProps {
   text?: string;
@@ -12,28 +11,17 @@ interface GoogleSignInButtonProps {
   className?: string;
 }
 
-/** Starts Google sign-in with Supabase. Google returns to /api/auth/callback, which creates the session. */
+/** Starts Google sign-in via server route. Supabase credentials stay server-only. */
 const GoogleSignInButton = ({
   text = "Continue with Google",
   next = "/account",
   className,
 }: GoogleSignInButtonProps) => {
   const [busy, setBusy] = useState(false);
-  const [failed, setFailed] = useState(false);
 
-  const signIn = async () => {
+  const signIn = () => {
     setBusy(true);
-    setFailed(false);
-    const { error } = await createClient().auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(next)}`,
-      },
-    });
-    if (error) {
-      setBusy(false);
-      setFailed(true);
-    }
+    window.location.href = `/api/auth/signin?next=${encodeURIComponent(next)}`;
   };
 
   return (
@@ -53,11 +41,6 @@ const GoogleSignInButton = ({
         />
         {busy ? "Opening Google…" : text}
       </button>
-      {failed && (
-        <p role="alert" className="text-sm text-red-700">
-          Could not start Google sign-in. Please try again.
-        </p>
-      )}
     </div>
   );
 };

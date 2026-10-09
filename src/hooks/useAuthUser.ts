@@ -9,7 +9,7 @@ export interface AuthState {
   isAdmin: boolean;
 }
 
-/** Who is signed in, for the header. Re-checks whenever Supabase reports a sign-in or sign-out. */
+/** Who is signed in, for the header. Checks via server route /api/auth/me and listens to auth state changes if available. */
 export const useAuthUser = (): AuthState => {
   const [state, setState] = useState<AuthState>({
     loading: true,
@@ -32,10 +32,15 @@ export const useAuthUser = (): AuthState => {
     };
 
     load();
-    const { data } = createClient().auth.onAuthStateChange(() => load());
+
+    const client = createClient();
+    const subscription = client
+      ? client.auth.onAuthStateChange(() => load()).data.subscription
+      : null;
+
     return () => {
       active = false;
-      data.subscription.unsubscribe();
+      subscription?.unsubscribe();
     };
   }, []);
 

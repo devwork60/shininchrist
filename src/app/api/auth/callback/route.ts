@@ -10,11 +10,17 @@ export async function GET(request: NextRequest) {
   const safeNext =
     next.startsWith("/") && !next.startsWith("//") ? next : "/account";
 
+  // When deployed behind Vercel's edge/proxy, prefer x-forwarded-host so we never redirect to internal host
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const isLocalEnv = process.env.NODE_ENV === "development";
+  const redirectBase =
+    !isLocalEnv && forwardedHost ? `https://${forwardedHost}` : origin;
+
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(`${origin}${safeNext}`);
+    if (!error) return NextResponse.redirect(`${redirectBase}${safeNext}`);
   }
 
-  return NextResponse.redirect(`${origin}/login?error=signin_failed`);
+  return NextResponse.redirect(`${redirectBase}/login?error=signin_failed`);
 }

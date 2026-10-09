@@ -48,3 +48,6 @@ new-assets/
 
 # generated Prisma client
 /src/generated/
+
+# scratch
+/scratch/

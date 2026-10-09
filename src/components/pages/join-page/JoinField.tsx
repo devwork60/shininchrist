@@ -8,6 +8,9 @@ interface JoinFieldProps {
   placeholder?: string;
   required?: boolean;
   span?: 1 | 2;
+  /** Starting value (saved data when the applicant comes back). */
+  defaultValue?: string;
+  /** Controlled mode, used by the date of birth so the form can react to age as it is typed. */
   value?: string;
   onChange?: (value: string) => void;
 }
@@ -23,6 +26,7 @@ const JoinField = ({
   placeholder,
   required = true,
   span = 1,
+  defaultValue,
   value,
   onChange,
 }: JoinFieldProps) => (
@@ -38,7 +42,7 @@ const JoinField = ({
         id={id}
         name={id}
         required={required}
-        defaultValue=""
+        defaultValue={defaultValue ?? ""}
         className={control}
       >
         <option value="" disabled>
@@ -50,7 +54,7 @@ const JoinField = ({
           </option>
         ))}
       </select>
-    ) : (
+    ) : value !== undefined ? (
       <input
         id={id}
         name={id}
@@ -58,9 +62,17 @@ const JoinField = ({
         required={required}
         placeholder={placeholder}
         value={value}
-        onChange={
-          onChange ? (event) => onChange(event.target.value) : undefined
-        }
+        onChange={(event) => onChange?.(event.target.value)}
+        className={control}
+      />
+    ) : (
+      <input
+        id={id}
+        name={id}
+        type={type}
+        required={required}
+        placeholder={placeholder}
+        defaultValue={defaultValue}
         min={type === "number" ? 1 : undefined}
         className={control}
       />

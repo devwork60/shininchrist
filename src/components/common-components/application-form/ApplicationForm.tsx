@@ -3,6 +3,10 @@
 import { useState, type FormEvent } from "react";
 import CardDescSm from "@/components/pages/typography/CardDescSm";
 import type { FormConfig } from "@/constant/forms/formTypes";
+import {
+  STALLED_MESSAGE,
+  openPaystackCheckout,
+} from "@/lib/payments/paystack-popup";
 import FormField from "./FormField";
 
 /**
@@ -12,9 +16,47 @@ import FormField from "./FormField";
  */
 const ApplicationForm = ({ config }: { config: FormConfig }) => {
   const [submitted, setSubmitted] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [stalledUrl, setStalledUrl] = useState<string | null>(null);
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // Payment forms: send the details to our server, then go to the secure checkout it returns.
+    if (config.submitTo) {
+      const form = new FormData(event.currentTarget);
+      const body: Record<string, FormDataEntryValue | FormDataEntryValue[]> =
+        {};
+      for (const key of new Set(form.keys())) {
+        const values = form.getAll(key);
+        body[key] = values.length > 1 ? values : values[0];
+      }
+      setBusy(true);
+      setError("");
+      setStalledUrl(null);
+      try {
+        const res = await fetch(config.submitTo, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          await openPaystackCheckout(data, (url) => setStalledUrl(url));
+          setBusy(false);
+          return;
+        }
+        setError(data.error ?? "Something went wrong. Please try again.");
+      } catch {
+        setError(
+          "Could not reach the server. Please check your connection and try again.",
+        );
+      }
+      setBusy(false);
+      return;
+    }
+
     setSubmitted(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -57,10 +99,35 @@ const ApplicationForm = ({ config }: { config: FormConfig }) => {
 
       <button
         type="submit"
+        disabled={busy}
         className="rounded-md bg-primary-green px-6 py-3.5 text-sm font-semibold text-white-color transition-colors hover:bg-primary-green-deep"
       >
-        {config.submit}
+        {busy ? "Please wait…" : config.submit}
       </button>
+      {stalledUrl && (
+        <p
+          role="alert"
+          className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        >
+          {STALLED_MESSAGE}{" "}
+          <a
+            href={stalledUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold underline"
+          >
+            Open the payment page in a new tab
+          </a>
+        </p>
+      )}
+      {error && (
+        <p
+          role="alert"
+          className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        >
+          {error}
+        </p>
+      )}
       {config.footnote && (
         <CardDescSm className="text-center !text-xs">
           {config.footnote}

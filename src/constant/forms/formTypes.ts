@@ -41,6 +41,8 @@ export interface FormConfig {
   successTitle: string;
   successText: string;
   footnote?: string;
+  /** When set, the form posts its fields as JSON to this API route and follows the returned { url }. */
+  submitTo?: string;
 }
 
 export const AGE_GROUPS = ["Under 18", "18-24", "25-39", "40-59", "60+"];

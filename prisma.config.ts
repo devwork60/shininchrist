@@ -1,11 +1,19 @@
-import { defineConfig, env } from "prisma/config";
+import { existsSync } from "node:fs";
+import { defineConfig } from "prisma/config";
 
-// Prisma CLI does not read .env.local by itself (Next.js does), so load it here.
-process.loadEnvFile(".env.local");
+// Local development keeps its secrets in .env.local, which the Prisma CLI does not read by itself.
+// On Vercel there is no such file: the same names come from the project's Environment Variables.
+if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: { path: "prisma/migrations" },
-  // The CLI (db pull, migrate) uses the session-mode pooler. The app uses DATABASE_URL (see src/lib/prisma.ts).
-  datasource: { url: env("DIRECT_URL") },
+  datasource: {
+    // CLI work (db pull, migrate) uses the session-mode pooler. "prisma generate", which Vercel runs at build time,
+    // only reads the schema, so it must not fail when no database address is set.
+    url:
+      process.env.DIRECT_URL ??
+      process.env.DATABASE_URL ??
+      "postgresql://not-set@localhost:5432/not-set",
+  },
 });

@@ -1,19 +1,30 @@
 import clsx from "clsx";
-import {
-  STATUS_BY_STEP,
-  WIZARD_STEPS,
-  type WizardStepId,
-} from "@/constant/joinData";
+import type { WizardStepId } from "@/constant/joinData";
 
 interface WizardProgressProps {
   steps: readonly { id: WizardStepId; label: string }[];
   current: number;
+  /** The real registration status saved for this applicant. */
+  status: string;
 }
 
+const STATUS_LABELS: Record<string, string> = {
+  started: "Started",
+  form_completed: "Form Completed",
+  subscription_pending: "Subscription Pending",
+  subscription_verified: "Subscription Verified",
+  consent_pending: "Consent Pending",
+  consent_verified: "Consent Verified",
+  uniform_payment_pending: "Uniform Payment Pending",
+  payment_confirmed: "Payment Confirmed",
+  approved: "Approved",
+  active: "Active Member",
+  suspended: "Suspended",
+};
+
 /** Progress bar with step labels, plus the current registration status. */
-const WizardProgress = ({ steps, current }: WizardProgressProps) => {
+const WizardProgress = ({ steps, current, status }: WizardProgressProps) => {
   const percent = Math.round(((current + 1) / steps.length) * 100);
-  const currentId = steps[current]?.id ?? WIZARD_STEPS[0].id;
 
   return (
     <div>
@@ -22,7 +33,7 @@ const WizardProgress = ({ steps, current }: WizardProgressProps) => {
           Step {current + 1} of {steps.length}
         </span>
         <span className="rounded-full border border-primary-gold/50 bg-primary-gold/10 px-3 py-1 text-primary-gold">
-          Status: {STATUS_BY_STEP[currentId]}
+          Status: {STATUS_LABELS[status] ?? status}
         </span>
       </div>
       <div

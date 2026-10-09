@@ -3,16 +3,29 @@ import { JOIN_LINKS, SOCIAL_OPTIONS } from "@/constant/joinData";
 import ExternalAction from "../ExternalAction";
 import StepFrame from "../StepFrame";
 
-interface StepProps {
+interface StepSubscribeProps {
+  platform: string;
+  onPlatform: (value: string) => void;
   onNext: () => void;
   onBack: () => void;
 }
 
-const StepSubscribe = ({ onNext, onBack }: StepProps) => (
+const StepSubscribe = ({
+  platform,
+  onPlatform,
+  onNext,
+  onBack,
+}: StepSubscribeProps) => (
   <StepFrame
     title="Subscribe to Social Community"
     description="To join ShininChrist, complete at least one of the following. You are welcome to connect on more than one platform."
-    onNext={onNext}
+    onNext={() => {
+      if (!platform)
+        throw new Error(
+          "Please choose the platform you subscribed or followed on.",
+        );
+      onNext();
+    }}
     onBack={onBack}
     locked="One platform is required."
   >
@@ -20,7 +33,11 @@ const StepSubscribe = ({ onNext, onBack }: StepProps) => (
       {SOCIAL_OPTIONS.map(({ id, label, action, hint }, index) => (
         <li
           key={id}
-          className="grid content-start gap-3 rounded-lg border border-primary-gold/30 bg-cream p-4"
+          className={
+            platform === id
+              ? "grid content-start gap-3 rounded-lg border-2 border-primary-green bg-cream p-4"
+              : "grid content-start gap-3 rounded-lg border border-primary-gold/30 bg-cream p-4"
+          }
         >
           <div className="grid grid-cols-[auto_1fr] items-center gap-3">
             <SocialIcons
@@ -44,17 +61,20 @@ const StepSubscribe = ({ onNext, onBack }: StepProps) => (
               tone={id === "youtube" ? "youtube" : "neutral"}
             />
           </div>
+          <label className="flex items-center gap-2 text-sm font-medium text-text-dark">
+            <input
+              type="radio"
+              name="platform"
+              value={id}
+              checked={platform === id}
+              onChange={() => onPlatform(id)}
+              className="h-4 w-4 accent-[var(--primary-green)]"
+            />
+            I did this one
+          </label>
         </li>
       ))}
     </ul>
-    <label className="flex items-start gap-3 text-sm text-text-dark">
-      <input
-        type="checkbox"
-        required
-        className="mt-1 h-4 w-4 accent-[var(--primary-green)]"
-      />
-      I have subscribed or followed on at least one of the platforms above.
-    </label>
   </StepFrame>
 );
 

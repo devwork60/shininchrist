@@ -22,6 +22,7 @@ const DONOR_TYPES = [
 
 export const GIVE_FINANCIAL_FORM: FormConfig = {
   id: "give-financial-form",
+  submitTo: "/api/payments/donation",
   title: "Give Financially",
   intro:
     "Support the mission through a one-time or monthly gift. After you continue you will be taken to a secure payment page. ShininChrist never collects or stores your card number or security code.",

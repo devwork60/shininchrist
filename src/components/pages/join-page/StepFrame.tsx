@@ -1,18 +1,21 @@
-import type { FormEvent, ReactNode } from "react";
+"use client";
+
+import { useState, type FormEvent, type ReactNode } from "react";
 import CardDescSm from "@/components/pages/typography/CardDescSm";
 
 interface StepFrameProps {
   title: string;
   description: string;
   children: ReactNode;
-  onNext: () => void;
+  /** Receives the form fields. Throw an Error to show its message under the form. */
+  onNext: (data: FormData) => void | Promise<void>;
   onBack?: () => void;
   nextLabel?: string;
   /** The green "lock" note under the step, as in the mockup (e.g. "Subscription is required.") */
   locked?: string;
 }
 
-/** Shared step layout: heading, body, lock note and Back / Continue buttons. */
+/** Shared step layout: heading, body, lock note, error message and Back / Continue buttons. */
 const StepFrame = ({
   title,
   description,
@@ -22,9 +25,23 @@ const StepFrame = ({
   nextLabel = "Continue",
   locked,
 }: StepFrameProps) => {
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onNext();
+    const data = new FormData(event.currentTarget);
+    setBusy(true);
+    setError("");
+    try {
+      await onNext(data);
+    } catch (caught) {
+      setError(
+        caught instanceof Error ? caught.message : "Something went wrong.",
+      );
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -41,12 +58,21 @@ const StepFrame = ({
           🔒 {locked}
         </p>
       )}
+      {error && (
+        <p
+          role="alert"
+          className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        >
+          {error}
+        </p>
+      )}
       <div className="flex items-center justify-between gap-3">
         {onBack ? (
           <button
             type="button"
             onClick={onBack}
-            className="rounded-md border border-primary-green/30 px-5 py-3 text-sm font-semibold text-text-dark hover:bg-cream"
+            disabled={busy}
+            className="rounded-md border border-primary-green/30 px-5 py-3 text-sm font-semibold text-text-dark hover:bg-cream disabled:opacity-60"
           >
             Back
           </button>
@@ -55,9 +81,10 @@ const StepFrame = ({
         )}
         <button
           type="submit"
-          className="rounded-md bg-primary-gold px-6 py-3 text-sm font-semibold text-white-color transition-colors hover:bg-primary-green"
+          disabled={busy}
+          className="rounded-md bg-primary-gold px-6 py-3 text-sm font-semibold text-white-color transition-colors hover:bg-primary-green disabled:cursor-wait disabled:opacity-70"
         >
-          {nextLabel}
+          {busy ? "Please wait…" : nextLabel}
         </button>
       </div>
     </form>

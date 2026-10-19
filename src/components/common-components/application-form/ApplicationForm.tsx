@@ -3,10 +3,7 @@
 import { useState, type FormEvent } from "react";
 import CardDescSm from "@/components/pages/typography/CardDescSm";
 import type { FormConfig } from "@/constant/forms/formTypes";
-import {
-  STALLED_MESSAGE,
-  openPaystackCheckout,
-} from "@/lib/payments/paystack-popup";
+import { openPaystackCheckout } from "@/lib/payments/paystack-checkout";
 import FormField from "./FormField";
 
 /**
@@ -18,7 +15,6 @@ const ApplicationForm = ({ config }: { config: FormConfig }) => {
   const [submitted, setSubmitted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [stalledUrl, setStalledUrl] = useState<string | null>(null);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,7 +30,6 @@ const ApplicationForm = ({ config }: { config: FormConfig }) => {
       }
       setBusy(true);
       setError("");
-      setStalledUrl(null);
       try {
         const res = await fetch(config.submitTo, {
           method: "POST",
@@ -43,8 +38,8 @@ const ApplicationForm = ({ config }: { config: FormConfig }) => {
         });
         const data = await res.json();
         if (res.ok && data.url) {
-          await openPaystackCheckout(data, (url) => setStalledUrl(url));
-          setBusy(false);
+          // Keep the button busy: the browser is already leaving for Paystack's page.
+          openPaystackCheckout(data);
           return;
         }
         setError(data.error ?? "Something went wrong. Please try again.");
@@ -104,22 +99,6 @@ const ApplicationForm = ({ config }: { config: FormConfig }) => {
       >
         {busy ? "Please wait…" : config.submit}
       </button>
-      {stalledUrl && (
-        <p
-          role="alert"
-          className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
-        >
-          {STALLED_MESSAGE}{" "}
-          <a
-            href={stalledUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold underline"
-          >
-            Open the payment page in a new tab
-          </a>
-        </p>
-      )}
       {error && (
         <p
           role="alert"

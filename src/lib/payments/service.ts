@@ -112,11 +112,10 @@ export interface UniformInput {
 
 const SIZES = ["S", "M", "L", "XL", "XXL"];
 
-/** Creates the uniform order with SERVER-side prices, then starts the checkout. */
-export const startUniformPayment = async (
+/** Creates the uniform order and a payment record with SERVER-side prices. Used by card checkout and bank transfer. */
+export const prepareUniformPayment = async (
   input: UniformInput,
   user: { id: string; email: string; name: string },
-  origin: string,
 ) => {
   assertPaystackConfigured();
   const size = String(input.size ?? "");
@@ -204,17 +203,26 @@ export const startUniformPayment = async (
     },
   });
 
+  return { payment, order, total, currency: price.currency };
+};
+
+export const startUniformPayment = async (
+  input: UniformInput,
+  user: { id: string; email: string; name: string },
+  origin: string,
+) => {
+  const { payment, order, total, currency } = await prepareUniformPayment(
+    input,
+    user,
+  );
   return checkout(
     payment.id,
     payment.internal_ref,
     user.email,
     total,
-    price.currency,
+    currency,
     origin,
-    {
-      purpose: "uniform",
-      order: order.reference,
-    },
+    { purpose: "uniform", order: order.reference },
   );
 };
 

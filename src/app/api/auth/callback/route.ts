@@ -1,26 +1,25 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { NEXT_COOKIE, getSiteUrl, safeNextPath } from "@/lib/auth-redirect";
 import { createClient } from "@/lib/supabase/server";
 
 /** Google sends the user back here with a one-time code. We swap it for a session cookie, then redirect. */
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = request.nextUrl;
-  const code = searchParams.get("code");
-  // Only allow redirects to our own paths (stops "?next=https://evil.com").
-  const next = searchParams.get("next") ?? "/account";
-  const safeNext =
-    next.startsWith("/") && !next.startsWith("//") ? next : "/account";
+  const site = getSiteUrl(request.nextUrl.origin);
+  const code = request.nextUrl.searchParams.get("code");
+  // Only a path on this site is ever used (cookie first, then an optional ?next=), so this cannot be an open redirect.
+  const next = safeNextPath(
+    request.cookies.get(NEXT_COOKIE)?.value ??
+      request.nextUrl.searchParams.get("next"),
+  );
 
-  // When deployed behind Vercel's edge/proxy, prefer x-forwarded-host so we never redirect to internal host
-  const forwardedHost = request.headers.get("x-forwarded-host");
-  const isLocalEnv = process.env.NODE_ENV === "development";
-  const redirectBase =
-    !isLocalEnv && forwardedHost ? `https://${forwardedHost}` : origin;
-
+  let destination = `${site}/login?error=signin_failed`;
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(`${redirectBase}${safeNext}`);
+    if (!error) destination = `${site}${next}`;
   }
 
-  return NextResponse.redirect(`${redirectBase}/login?error=signin_failed`);
+  const response = NextResponse.redirect(destination);
+  response.cookies.delete(NEXT_COOKIE);
+  return response;
 }

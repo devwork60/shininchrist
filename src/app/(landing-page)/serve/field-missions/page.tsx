@@ -4,6 +4,7 @@ import { SERVE_RELATED } from "@/constant/forms/formPageLinks";
 import { FIELD_SERVICE_FORM } from "@/constant/forms/serveForms";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/serve/field-missions" },
   title: "Field & Missions | ShininChrist",
   description:
     "Apply to serve in local or global outreach, missions, evangelism and community service with ShininChrist.",

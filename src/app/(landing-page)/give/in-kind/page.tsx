@@ -4,6 +4,7 @@ import { GIVE_RELATED } from "@/constant/forms/formPageLinks";
 import { GIVE_IN_KIND_FORM } from "@/constant/forms/giveForms";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/give/in-kind" },
   title: "Give In-Kind | ShininChrist",
   description:
     "Offer goods, supplies and equipment to meet real needs. All offers are reviewed before acceptance.",

@@ -4,6 +4,7 @@ import { SERVE_TABS, SERVE_RELATED } from "@/constant/forms/formPageLinks";
 import { VOLUNTEER_TIME_FORM } from "@/constant/forms/serveForms";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/serve/volunteer" },
   title: "Volunteer Your Time | ShininChrist",
   description:
     "Apply to volunteer your time with ShininChrist in outreach, education, media, events and community service.",

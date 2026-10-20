@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/daily" },
   title: "Daily | ShininChrist",
   description:
     "A daily multimedia experience with Scripture, worship, practical teaching and prayer — for everyone, everywhere.",

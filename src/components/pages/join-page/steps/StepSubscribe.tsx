@@ -1,5 +1,5 @@
 import SocialIcons from "@/components/icons/SocialIcons";
-import { JOIN_LINKS, SOCIAL_OPTIONS } from "@/constant/joinData";
+import { JOIN_CHANNELS, SOCIAL_OPTIONS } from "@/constant/joinData";
 import ExternalAction from "../ExternalAction";
 import StepFrame from "../StepFrame";
 
@@ -54,12 +54,19 @@ const StepSubscribe = ({
             </div>
           </div>
           <p className="text-sm text-text-dark">{hint}</p>
-          <div>
-            <ExternalAction
-              url={JOIN_LINKS[id]}
-              text={action}
-              tone={id === "youtube" ? "youtube" : "neutral"}
-            />
+          <div className="grid justify-items-start gap-2">
+            {JOIN_CHANNELS[id].map((channel) => (
+              <ExternalAction
+                key={channel.url}
+                url={channel.url}
+                text={
+                  JOIN_CHANNELS[id].length > 1
+                    ? `${action}: ${channel.label}`
+                    : action
+                }
+                tone={id === "youtube" ? "youtube" : "neutral"}
+              />
+            ))}
           </div>
           <label className="flex items-center gap-2 text-sm font-medium text-text-dark">
             <input

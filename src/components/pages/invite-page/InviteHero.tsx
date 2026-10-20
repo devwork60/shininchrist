@@ -2,9 +2,9 @@ import Image from "next/image";
 import HeroHeading from "@/components/pages/typography/HeroHeading";
 import Paragraph from "@/components/pages/typography/Paragraph";
 import QuoteText from "@/components/pages/typography/QuoteText";
-import { INVITE_HERO } from "@/constant/inviteMercyData";
+import type { InviteContent } from "@/lib/site-content-schema";
 
-const InviteHero = () => (
+const InviteHero = ({ content: INVITE_HERO }: { content: InviteContent }) => (
   <section className="bg-[linear-gradient(180deg,#efe9d8,var(--background-cream))] pb-24 lg:pb-32">
     <div className="wrapper grid grid-cols-1 items-center gap-6 pt-10 lg:grid-cols-[1.15fr_0.9fr_0.9fr] lg:pt-14">
       <div>

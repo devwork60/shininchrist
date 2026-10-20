@@ -4,6 +4,7 @@ import { SERVE_TABS, SERVE_RELATED } from "@/constant/forms/formPageLinks";
 import { SERVE_PRAYER_FORM } from "@/constant/forms/serveForms";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/serve/prayer" },
   title: "Serve in Prayer | ShininChrist",
   description:
     "Join the ShininChrist prayer team and serve through intercession for people, communities, nations and the gospel.",

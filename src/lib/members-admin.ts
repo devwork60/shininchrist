@@ -1,5 +1,5 @@
 import { COUNTRIES } from "@/constant/countries";
-import { JoinInputError } from "@/lib/join";
+import { JoinInputError, missingProfileFields } from "@/lib/join";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 
@@ -22,6 +22,8 @@ export interface Applicant {
   consentUrl: string | null;
   /** Everything the Join guide requires is confirmed, so the member can be activated. */
   ready: boolean;
+  /** What is still missing before activation, in plain words (empty when ready). */
+  missing: string[];
 }
 
 const signed = async (bucket: string, path: string | null) => {
@@ -59,13 +61,26 @@ export const listApplicants = async (): Promise<Applicant[]> => {
     memberships.map(async (m) => {
       const profile = profiles.find((p) => p.id === m.user_id);
       const uniformPaid = paid.some((p) => p.user_id === m.user_id);
-      const ready =
-        Boolean(
-          profile?.full_name && profile.date_of_birth && profile.country_code,
-        ) &&
-        m.proof_status === "verified" &&
-        (!m.is_minor || m.consent_status === "verified") &&
-        uniformPaid;
+      const formMissing = missingProfileFields(profile ?? null);
+      const missing = [
+        ...(formMissing.length
+          ? [`registration form incomplete (${formMissing.join(", ")})`]
+          : []),
+        ...(m.proof_status === "verified"
+          ? []
+          : [
+              m.proof_status === "rejected"
+                ? "subscription proof was rejected: the member must upload it again"
+                : m.proof_status === "pending"
+                  ? "subscription proof to verify"
+                  : "subscription proof not uploaded",
+            ]),
+        ...(!m.is_minor || m.consent_status === "verified"
+          ? []
+          : ["parental consent not verified"]),
+        ...(uniformPaid ? [] : ["uniform payment not confirmed"]),
+      ];
+      const ready = missing.length === 0;
 
       return {
         userId: m.user_id,
@@ -83,6 +98,7 @@ export const listApplicants = async (): Promise<Applicant[]> => {
         proofUrl: await signed("proofs", m.proof_path),
         consentUrl: await signed("consents", m.consent_path),
         ready,
+        missing,
       };
     }),
   );
@@ -176,8 +192,11 @@ export const activateMember = async (adminId: string, userId: string) => {
     throw new JoinInputError("This member is already active.");
   if (membership.status === "suspended")
     throw new JoinInputError("This member is suspended.");
-  if (!profile.full_name || !profile.date_of_birth || !profile.country_code) {
-    throw new JoinInputError("The registration form is incomplete.");
+  const formMissing = missingProfileFields(profile);
+  if (formMissing.length > 0) {
+    throw new JoinInputError(
+      `The registration form is incomplete. Still needed from the member: ${formMissing.join(", ")}.`,
+    );
   }
   if (membership.proof_status !== "verified")
     throw new JoinInputError("The social subscription proof is not verified.");
@@ -252,6 +271,8 @@ export interface MemberDetail {
     activatedAt: Date | null;
     approvedBy: string | null;
     adminNotes: string | null;
+    suspendedAt: Date | null;
+    suspendedReason: string | null;
     proofUrl: string | null;
     consentUrl: string | null;
   };
@@ -260,6 +281,7 @@ export interface MemberDetail {
     id: string;
     reference: string;
     item: string;
+    deliveryType: string | null;
     status: string;
     total: number | null;
     uniformCost: number | null;
@@ -368,6 +390,8 @@ export const getMemberDetail = async (
         ? actorName(membership.approved_by)
         : null,
       adminNotes: membership.admin_notes,
+      suspendedAt: membership.suspended_at,
+      suspendedReason: membership.suspended_reason,
       proofUrl: await signed("proofs", membership.proof_path),
       consentUrl: await signed("consents", membership.consent_path),
     },
@@ -376,6 +400,7 @@ export const getMemberDetail = async (
       id: o.id,
       reference: o.reference,
       item: `${o.uniform_type}, size ${o.size} × ${o.quantity}`,
+      deliveryType: o.delivery_type,
       status: o.status,
       total: o.total ? Number(o.total) : null,
       uniformCost: o.uniform_cost ? Number(o.uniform_cost) : null,

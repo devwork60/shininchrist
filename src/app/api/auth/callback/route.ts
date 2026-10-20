@@ -1,5 +1,6 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
 import { NEXT_COOKIE, getSiteUrl, safeNextPath } from "@/lib/auth-redirect";
+import { notifyAccountCreated } from "@/lib/email/notify";
 import { createClient } from "@/lib/supabase/server";
 
 /** Google sends the user back here with a one-time code. We swap it for a session cookie, then redirect. */
@@ -16,7 +17,19 @@ export async function GET(request: NextRequest) {
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) destination = `${site}${next}`;
+    if (!error) {
+      destination = `${site}${next}`;
+      // A brand-new account (created in the last 10 minutes) gets the welcome email, after the redirect is sent.
+      const { data } = await supabase.auth.getUser();
+      const user = data.user;
+      if (user && Date.now() - Date.parse(user.created_at) < 10 * 60 * 1000) {
+        const name =
+          (user.user_metadata?.full_name as string | undefined) ??
+          (user.user_metadata?.name as string | undefined) ??
+          "";
+        after(() => notifyAccountCreated(user.id, user.email ?? "", name));
+      }
+    }
   }
 
   const response = NextResponse.redirect(destination);

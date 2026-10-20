@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import HeroSection from "@/components/pages/landing-page/HeroSection";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 // Below the fold — loaded as separate chunks
 const VisionMissionSection = dynamic(

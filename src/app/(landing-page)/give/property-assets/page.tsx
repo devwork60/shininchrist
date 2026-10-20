@@ -4,6 +4,7 @@ import { GIVE_RELATED } from "@/constant/forms/formPageLinks";
 import { GIVE_PROPERTY_FORM } from "@/constant/forms/giveForms";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/give/property-assets" },
   title: "Give Property & Major Assets | ShininChrist",
   description:
     "Partner with ShininChrist through larger gifts: land, buildings, vehicles, bulk technology and major equipment.",

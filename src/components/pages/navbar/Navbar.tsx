@@ -11,15 +11,15 @@ import {
   isNavActive,
   JOIN_CTA,
   LOGIN_CTA,
-  NAV_ITEMS,
   SEARCH_LINK,
+  type NavItem,
 } from "@/constant/navData";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import AccountMenu from "./AccountMenu";
 import MobileMenu from "./MobileMenu";
 import NavDropdown from "./NavDropdown";
 
-const Navbar = () => {
+const Navbar = ({ items }: { items: NavItem[] }) => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { user, isAdmin } = useAuthUser();
@@ -41,7 +41,7 @@ const Navbar = () => {
 
         <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex items-center gap-2.5 xl:gap-5">
-            {NAV_ITEMS.map((item) => {
+            {items.map((item) => {
               if (item.children) {
                 return (
                   <NavDropdown
@@ -119,6 +119,7 @@ const Navbar = () => {
 
       {open && (
         <MobileMenu
+          items={items}
           signedIn={signedIn}
           pathname={pathname}
           onNavigate={() => setOpen(false)}

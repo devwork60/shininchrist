@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/join" },
   title: "Join ShininChrist | A Step-by-Step Process",
   description:
     "Become part of the ShininChrist family. Follow the simple steps to register, subscribe, request your uniform and gain access to member benefits.",

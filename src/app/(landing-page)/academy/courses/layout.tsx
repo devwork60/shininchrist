@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/academy/courses" },
   title: "Courses | ShininChrist Academy",
   description:
     "Explore, learn, grow and make an impact. Browse ShininChrist Academy courses by field of learning.",

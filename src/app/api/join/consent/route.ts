@@ -1,4 +1,5 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
+import { notifyItemSubmitted } from "@/lib/email/notify";
 import { JoinInputError } from "@/lib/join";
 import { joinErrorResponse, requireUser } from "@/lib/join-http";
 import { prisma } from "@/lib/prisma";
@@ -34,6 +35,7 @@ export async function POST(request: NextRequest) {
       where: { user_id: auth.user.id },
       data: { consent_path: path, consent_status: "pending" },
     });
+    after(() => notifyItemSubmitted(auth.user.id, "consent"));
     return NextResponse.json({ ok: true });
   } catch (error) {
     return joinErrorResponse(error);

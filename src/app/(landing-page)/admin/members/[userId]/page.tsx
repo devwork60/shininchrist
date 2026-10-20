@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/common-components/Breadcrumb";
+import MemberAccessPanel from "@/components/pages/admin-page/MemberAccessPanel";
 import OrderStatusControl from "@/components/pages/admin-page/OrderStatusControl";
 import MainHeading from "@/components/pages/typography/MainHeading";
 import { countryName } from "@/constant/countries";
@@ -186,6 +187,16 @@ const MemberDetailPage = async ({
             </p>
           </Panel>
 
+          <MemberAccessPanel
+            userId={userId}
+            roles={m.roles}
+            status={membership.status}
+            suspendedReason={membership.suspendedReason}
+            suspendedAt={membership.suspendedAt?.toISOString() ?? null}
+            actorIsSuperAdmin={admin.roles.includes("super_admin")}
+            isSelf={admin.id === userId}
+          />
+
           <Panel title={`Uniform orders (${m.orders.length})`}>
             {m.orders.length === 0 ? (
               <p className="text-sm text-text-grey">No uniform order yet.</p>
@@ -209,6 +220,7 @@ const MemberDetailPage = async ({
                       <Rows
                         rows={[
                           ["Item", order.item],
+                          ["Delivery type", order.deliveryType ?? "—"],
                           ["Uniform", money(order.uniformCost, order.currency)],
                           [
                             "Delivery fee",

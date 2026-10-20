@@ -76,6 +76,39 @@ const AccountMenu = ({ name, email, isAdmin }: AccountMenuProps) => {
           )}
           {isAdmin && (
             <li>
+              <Link href="/admin/payments" className={row}>
+                <AuthIcons
+                  name="check"
+                  className="h-5 w-5 [&>svg]:h-full [&>svg]:w-full"
+                />
+                Payments
+              </Link>
+            </li>
+          )}
+          {isAdmin && (
+            <li>
+              <Link href="/admin/bank-accounts" className={row}>
+                <AuthIcons
+                  name="shield"
+                  className="h-5 w-5 [&>svg]:h-full [&>svg]:w-full"
+                />
+                Bank accounts
+              </Link>
+            </li>
+          )}
+          {isAdmin && (
+            <li>
+              <Link href="/admin/content" className={row}>
+                <AuthIcons
+                  name="check"
+                  className="h-5 w-5 [&>svg]:h-full [&>svg]:w-full"
+                />
+                Site content
+              </Link>
+            </li>
+          )}
+          {isAdmin && (
+            <li>
               <Link href="/admin/sessions" className={row}>
                 <AuthIcons
                   name="shield"

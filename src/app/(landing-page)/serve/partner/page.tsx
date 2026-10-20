@@ -4,6 +4,7 @@ import { SERVE_RELATED } from "@/constant/forms/formPageLinks";
 import { PARTNER_FORM } from "@/constant/forms/serveForms";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/serve/partner" },
   title: "Partner With Us | ShininChrist",
   description:
     "Churches, schools, businesses and community groups: tell us how you would like to serve alongside ShininChrist.",

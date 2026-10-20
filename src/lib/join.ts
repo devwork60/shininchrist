@@ -33,6 +33,31 @@ export const EARLY_STATUSES = [
   "uniform_payment_pending",
 ] as const;
 
+/**
+ * The About You fields every applicant must give. Google only supplies the NAME, so a name alone never means the
+ * form was filled in. Used by the Join wizard, by payments and by admin activation.
+ */
+export const missingProfileFields = (
+  profile: {
+    full_name: string | null;
+    date_of_birth: Date | null;
+    gender: string | null;
+    country_code: string | null;
+    whatsapp: string | null;
+    area_of_interest: string | null;
+  } | null,
+) =>
+  [
+    [profile?.full_name, "full name"],
+    [profile?.date_of_birth, "date of birth"],
+    [profile?.gender, "gender"],
+    [profile?.country_code, "country"],
+    [profile?.whatsapp, "WhatsApp number"],
+    [profile?.area_of_interest, "area of interest"],
+  ]
+    .filter(([value]) => !value)
+    .map(([, label]) => label as string);
+
 export interface ProfileInput {
   fullName?: unknown;
   dob?: unknown;
@@ -117,6 +142,8 @@ export interface JoinStatus {
     state: string | null;
     whatsapp: string | null;
     interest: string | null;
+    /** Every About You field is filled in (a name from Google alone does not count). */
+    complete: boolean;
   };
   membership: {
     status: string;
@@ -180,6 +207,7 @@ export const getJoinStatus = async (
       state: profile?.state_region ?? null,
       whatsapp: profile?.whatsapp ?? null,
       interest: profile?.area_of_interest ?? null,
+      complete: missingProfileFields(profile ?? null).length === 0,
     },
     membership: {
       status: membership?.status ?? "started",

@@ -8,6 +8,7 @@ export const COUNTRIES: Record<string, string> = {
   "South Africa": "ZA",
   "United Kingdom": "GB",
   Canada: "CA",
+  Pakistan: "PK",
 };
 
 export const COUNTRY_NAMES = Object.keys(COUNTRIES);

@@ -15,6 +15,7 @@ export const generateMetadata = async ({
   const product = findProduct(slug);
   if (!product) return {};
   return {
+    alternates: { canonical: `/store/${product.slug}` },
     title: `${product.title} | ShininChrist Store`,
     description: product.description,
   };

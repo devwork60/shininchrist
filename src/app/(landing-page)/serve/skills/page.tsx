@@ -4,6 +4,7 @@ import { SERVE_TABS, SERVE_RELATED } from "@/constant/forms/formPageLinks";
 import { VOLUNTEER_SKILLS_FORM } from "@/constant/forms/serveForms";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/serve/skills" },
   title: "Share Your Skills | ShininChrist",
   description:
     "Offer your professional or creative skills to advance ShininChrist's spiritual, educational, digital and community work.",

@@ -1,5 +1,7 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
 import { getAdminUser } from "@/lib/auth";
+import { notifyOrderUpdate } from "@/lib/email/notify";
+import { prisma } from "@/lib/prisma";
 import { joinErrorResponse } from "@/lib/join-http";
 import { setOrderStatus } from "@/lib/members-admin";
 
@@ -23,6 +25,8 @@ export async function POST(
 
   try {
     await setOrderStatus(admin.id, orderId, status);
+    const order = await prisma.uniform_orders.findUnique({ where: { id: orderId } });
+    if (order) after(() => notifyOrderUpdate(order.user_id, order.reference, status));
     return NextResponse.json({ ok: true });
   } catch (error) {
     return joinErrorResponse(error);

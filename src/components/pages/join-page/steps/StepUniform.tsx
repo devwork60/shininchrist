@@ -1,3 +1,4 @@
+import { DELIVERY_TYPES } from "@/constant/deliveryTypes";
 import { UNIFORM_SIZES, UNIFORM_TYPES } from "@/constant/joinData";
 import JoinField from "../JoinField";
 import { formToObject } from "../joinApi";
@@ -6,6 +7,7 @@ import StepFrame from "../StepFrame";
 export interface UniformDetails {
   size: string;
   quantity: string;
+  deliveryType: string;
   address: string;
   city: string;
   state: string;
@@ -27,6 +29,7 @@ const StepUniform = ({ details, onSave, onBack }: StepUniformProps) => (
       onSave({
         size: String(values.size),
         quantity: String(values.quantity),
+        deliveryType: String(values.deliveryType),
         address: String(values.address),
         city: String(values.city),
         state: String(values.state ?? ""),
@@ -58,6 +61,13 @@ const StepUniform = ({ details, onSave, onBack }: StepUniformProps) => (
       />
     </div>
     <div className="grid gap-4 sm:grid-cols-2">
+      <JoinField
+        id="deliveryType"
+        label="Delivery Type"
+        span={2}
+        options={DELIVERY_TYPES}
+        defaultValue={details?.deliveryType ?? DELIVERY_TYPES[0]}
+      />
       <JoinField
         id="address"
         label="Delivery Address"

@@ -4,6 +4,7 @@ import { GIVE_RELATED } from "@/constant/forms/formPageLinks";
 import { GIVE_FINANCIAL_FORM } from "@/constant/forms/giveForms";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/give/financially" },
   title: "Give Financially | ShininChrist",
   description:
     "Support the ShininChrist mission with a one-time or monthly financial gift through secure payment.",

@@ -1,5 +1,6 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
 import { getAdminUser } from "@/lib/auth";
+import { notifyItemResult } from "@/lib/email/notify";
 import { joinErrorResponse } from "@/lib/join-http";
 import { reviewItem } from "@/lib/members-admin";
 
@@ -27,6 +28,7 @@ export async function POST(
 
   try {
     await reviewItem(admin.id, userId, item, decision);
+    after(() => notifyItemResult(userId, item, decision === "verify"));
     return NextResponse.json({ ok: true });
   } catch (error) {
     return joinErrorResponse(error);

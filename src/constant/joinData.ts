@@ -137,12 +137,28 @@ export const CONSENT_FORM_URL = "/forms/ShininChrist-Parental-Consent-Form.pdf";
 
 /** Official links are supplied by ShininChrist. Empty = shown as "link coming soon", never a fake link. */
 export const JOIN_LINKS = {
-  youtube: "",
-  facebook: "",
-  instagram: "",
-  tiktok: "",
   whatsapp: "",
   contact: "/contact",
+};
+
+/**
+ * Official channels people can subscribe to or follow on the Subscribe step, one list per platform.
+ * An empty list shows "link coming soon". The addresses are the official pages without share-tracking parts.
+ */
+export const JOIN_CHANNELS: Record<
+  "youtube" | "facebook",
+  { label: string; url: string }[]
+> = {
+  youtube: [
+    { label: "ShininChrist", url: "https://youtube.com/@shininchrist" },
+    { label: "Mercy Amen", url: "https://youtube.com/@officialmercyamen" },
+  ],
+  facebook: [
+    {
+      label: "ShininChrist",
+      url: "https://www.facebook.com/share/1GZbPA9QNH/",
+    },
+  ],
 };
 
 /** Wizard labels (Join guide section 11). Consent is skipped for applicants 18 and over. */
@@ -165,25 +181,13 @@ export const SOCIAL_OPTIONS = [
     id: "youtube",
     label: "YouTube",
     action: "Subscribe on YouTube",
-    hint: "Subscribe to the official ShininChrist YouTube channel.",
+    hint: "Subscribe to the official ShininChrist and Mercy Amen YouTube channels.",
   },
   {
     id: "facebook",
     label: "Facebook",
     action: "Follow on Facebook",
     hint: "Follow the official ShininChrist Facebook page.",
-  },
-  {
-    id: "instagram",
-    label: "Instagram",
-    action: "Follow on Instagram",
-    hint: "Follow the official ShininChrist Instagram page.",
-  },
-  {
-    id: "tiktok",
-    label: "TikTok",
-    action: "Follow on TikTok",
-    hint: "Follow the official ShininChrist TikTok page.",
   },
 ] as const;
 

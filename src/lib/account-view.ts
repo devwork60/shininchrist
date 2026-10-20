@@ -101,6 +101,8 @@ export interface OrderView {
   deliveryAddress: string;
   paymentRef: string | null;
   paidAt: Date | null;
+  /** Latest payment attempt, so the page can say "awaiting verification" or "rejected: reason". */
+  payment: { method: string; status: string; reason: string | null } | null;
 }
 
 /** The newest uniform order with its confirmed payment, or null when none exists. */
@@ -120,6 +122,10 @@ export const getOrderView = async (
   });
   if (!order) return null;
   const payment = order.payments[0];
+  const latest = await prisma.payments.findFirst({
+    where: { uniform_order_id: order.id },
+    orderBy: { created_at: "desc" },
+  });
 
   return {
     reference: order.reference,
@@ -136,6 +142,13 @@ export const getOrderView = async (
       .join(", "),
     paymentRef: payment?.internal_ref ?? null,
     paidAt: payment?.verified_at ?? null,
+    payment: latest
+      ? {
+          method: latest.gateway,
+          status: latest.status,
+          reason: latest.rejection_reason,
+        }
+      : null,
   };
 };
 

@@ -1,5 +1,6 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
 import { getAdminUser } from "@/lib/auth";
+import { notifyMembershipApproved } from "@/lib/email/notify";
 import { joinErrorResponse } from "@/lib/join-http";
 import { activateMember } from "@/lib/members-admin";
 
@@ -19,6 +20,7 @@ export async function POST(
 
   try {
     const memberId = await activateMember(admin.id, userId);
+    after(() => notifyMembershipApproved(userId, memberId));
     return NextResponse.json({ ok: true, memberId });
   } catch (error) {
     return joinErrorResponse(error);

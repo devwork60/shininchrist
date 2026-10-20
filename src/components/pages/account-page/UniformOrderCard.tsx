@@ -57,6 +57,40 @@ const UniformOrderCard = ({ order }: { order: OrderView | null }) => {
         )}
       </div>
 
+      {order.payment?.status === "pending_verification" && (
+        <p
+          role="status"
+          className="mt-4 rounded-md border border-primary-gold/40 bg-primary-gold/10 px-4 py-3 text-sm text-text-dark"
+        >
+          <strong>Bank transfer proof submitted.</strong> Your payment is
+          awaiting admin verification.
+        </p>
+      )}
+      {order.payment?.status === "rejected" && (
+        <p
+          role="alert"
+          className="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        >
+          <strong>Your payment proof was not accepted.</strong> Reason:{" "}
+          {order.payment.reason}.{" "}
+          <Link href="/join" className="font-semibold underline">
+            Upload a new receipt
+          </Link>
+        </p>
+      )}
+      {order.payment?.status === "confirmed" && (
+        <p
+          role="status"
+          className="mt-4 rounded-md border border-primary-green/30 bg-primary-green/10 px-4 py-3 text-sm text-text-dark"
+        >
+          <strong>Paid.</strong> Payment received
+          {order.payment.method === "bank_transfer"
+            ? " (bank transfer, verified by an admin)"
+            : " (card, via Paystack)"}
+          .
+        </p>
+      )}
+
       <ol className="mt-5 grid grid-cols-5 gap-1 text-center">
         {ORDER_STEPS.map((label, index) => {
           const finished = index < done;

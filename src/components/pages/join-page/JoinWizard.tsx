@@ -32,7 +32,7 @@ const resumeStep = (status: Loaded): WizardStepId => {
   if (!status.signedIn) return "account";
   const { profile, membership, uniformPaid } = status;
   if (membership.status === "active") return "welcome";
-  if (!profile.fullName) return "about";
+  if (!profile.complete) return "about";
   if (membership.isMinor && membership.consentStatus === "not_submitted")
     return "consent";
   if (membership.proofStatus === "not_submitted") return "subscribe";

@@ -88,12 +88,18 @@ export const FOOTER_CONNECT = {
 
 // NOTE: URLs are placeholders ("#") until the official links are supplied.
 export const SOCIAL_LINKS: SocialLink[] = [
-  { id: "youtube", icon: "youtube", label: "YouTube", url: "#", enabled: true },
+  {
+    id: "youtube",
+    icon: "youtube",
+    label: "YouTube",
+    url: "https://youtube.com/@shininchrist",
+    enabled: true,
+  },
   {
     id: "facebook",
     icon: "facebook",
     label: "Facebook",
-    url: "#",
+    url: "https://www.facebook.com/share/1GZbPA9QNH/",
     enabled: true,
   },
   {

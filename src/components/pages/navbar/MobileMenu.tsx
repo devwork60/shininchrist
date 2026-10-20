@@ -9,11 +9,12 @@ import {
   isNavActive,
   JOIN_CTA,
   LOGIN_CTA,
-  NAV_ITEMS,
   SEARCH_LINK,
+  type NavItem,
 } from "@/constant/navData";
 
 interface MobileMenuProps {
+  items: NavItem[];
   signedIn?: boolean;
   pathname: string;
   onNavigate: () => void;
@@ -26,6 +27,7 @@ const linkClass = (active: boolean) =>
   );
 
 const MobileMenu = ({
+  items,
   signedIn = false,
   pathname,
   onNavigate,
@@ -39,7 +41,7 @@ const MobileMenu = ({
       className="max-h-[calc(100vh-74px)] overflow-y-auto border-t border-black/5 bg-[var(--white-color)] lg:hidden"
     >
       <ul className="wrapper flex flex-col py-2">
-        {NAV_ITEMS.map((item) => {
+        {items.map((item) => {
           const active = isNavActive(item.href, pathname);
 
           if (!item.children) {

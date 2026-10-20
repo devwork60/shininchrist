@@ -1,5 +1,10 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { EARLY_STATUSES, JoinInputError } from "@/lib/join";
+import { after, NextResponse, type NextRequest } from "next/server";
+import { notifyItemSubmitted } from "@/lib/email/notify";
+import {
+  EARLY_STATUSES,
+  JoinInputError,
+  missingProfileFields,
+} from "@/lib/join";
 import { joinErrorResponse, requireUser } from "@/lib/join-http";
 import { prisma } from "@/lib/prisma";
 import { uploadPrivateFile } from "@/lib/uploads";
@@ -17,6 +22,13 @@ export async function POST(request: NextRequest) {
       throw new JoinInputError(
         "Please choose the platform your screenshot is from.",
       );
+    }
+
+    const profile = await prisma.profiles.findUnique({
+      where: { id: auth.user.id },
+    });
+    if (missingProfileFields(profile).length > 0) {
+      throw new JoinInputError("Please complete the About You step first.");
     }
 
     const membership = await prisma.memberships.findUnique({
@@ -45,6 +57,7 @@ export async function POST(request: NextRequest) {
       data: { status: "subscription_pending" },
     });
 
+    after(() => notifyItemSubmitted(auth.user.id, "proof"));
     return NextResponse.json({ ok: true });
   } catch (error) {
     return joinErrorResponse(error);

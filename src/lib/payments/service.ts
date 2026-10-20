@@ -1,4 +1,6 @@
-import { EARLY_STATUSES } from "@/lib/join";
+import { EARLY_STATUSES, missingProfileFields } from "@/lib/join";
+import { DELIVERY_TYPES } from "@/constant/deliveryTypes";
+import { notifyPaymentConfirmed } from "@/lib/email/notify";
 import { prisma } from "@/lib/prisma";
 import {
   assertPaystackConfigured,
@@ -103,6 +105,7 @@ export const startDonation = async (
 export interface UniformInput {
   size: unknown;
   quantity: unknown;
+  deliveryType?: unknown;
   address: unknown;
   city: unknown;
   state?: unknown;
@@ -112,12 +115,13 @@ export interface UniformInput {
 
 const SIZES = ["S", "M", "L", "XL", "XXL"];
 
-/** Creates the uniform order and a payment record with SERVER-side prices. Used by card checkout and bank transfer. */
+/** Creates the uniform order and a payment record with SERVER-side prices. Used by card checkout and manual bank transfer. */
 export const prepareUniformPayment = async (
   input: UniformInput,
   user: { id: string; email: string; name: string },
+  gateway: string = GATEWAY,
 ) => {
-  assertPaystackConfigured();
+  if (gateway === GATEWAY) assertPaystackConfigured();
   const size = String(input.size ?? "");
   if (!SIZES.includes(size))
     throw new PaymentInputError("Please choose a valid size.");
@@ -126,10 +130,13 @@ export const prepareUniformPayment = async (
     throw new PaymentInputError("Quantity must be between 1 and 20.");
   }
   const profile = await prisma.profiles.findUnique({ where: { id: user.id } });
-  const country = profile?.country_code ?? "";
-  if (!country) {
-    throw new PaymentInputError("Please complete the About You step first.");
+  const missing = missingProfileFields(profile);
+  if (missing.length > 0) {
+    throw new PaymentInputError(
+      `Please complete the About You step first (still needed: ${missing.join(", ")}).`,
+    );
   }
+  const country = profile?.country_code ?? "";
   const alreadyPaid = await prisma.payments.count({
     where: { user_id: user.id, purpose: "uniform", status: "confirmed" },
   });
@@ -138,6 +145,21 @@ export const prepareUniformPayment = async (
       "Your uniform payment has already been received.",
     );
   }
+  const awaitingReview = await prisma.payments.count({
+    where: {
+      user_id: user.id,
+      purpose: "uniform",
+      status: "pending_verification",
+    },
+  });
+  if (awaitingReview > 0) {
+    throw new PaymentInputError(
+      "Your payment proof is waiting for verification. Please wait for the result before paying again.",
+    );
+  }
+  const deliveryType = String(input.deliveryType ?? "");
+  if (!DELIVERY_TYPES.includes(deliveryType))
+    throw new PaymentInputError("Please choose a delivery type.");
   const address = String(input.address ?? "").trim();
   const city = String(input.city ?? "").trim();
   const phone = String(input.phone ?? "").trim();
@@ -171,6 +193,7 @@ export const prepareUniformPayment = async (
       size,
       quantity,
       country_code: country,
+      delivery_type: deliveryType,
       delivery_address: address,
       delivery_city: city,
       delivery_state: input.state ? String(input.state) : null,
@@ -195,7 +218,7 @@ export const prepareUniformPayment = async (
       uniform_order_id: order.id,
       amount: total,
       currency: price.currency,
-      gateway: GATEWAY,
+      gateway,
       status: "created",
       payer_name: user.name,
       payer_email: user.email,
@@ -281,6 +304,11 @@ export const confirmPayment = async (
   if (!payment) return { state: "unknown" };
   if (payment.status === "confirmed")
     return { state: "confirmed", purpose: payment.purpose };
+  // Manual bank transfers are never confirmed by a browser or webhook call: only an admin approval does that.
+  if (payment.gateway !== GATEWAY)
+    return payment.status === "pending_verification"
+      ? { state: "pending" }
+      : { state: "unknown" };
 
   const result = await verifyTransaction(reference);
 
@@ -336,28 +364,7 @@ export const confirmPayment = async (
       payment.uniform_order_id &&
       payment.user_id
     ) {
-      await prisma.uniform_orders.update({
-        where: { id: payment.uniform_order_id },
-        data: { status: "paid" },
-      });
-      // Move the member forward, but never downgrade someone who is already approved, active or suspended.
-      await prisma.memberships.updateMany({
-        where: {
-          user_id: payment.user_id,
-          status: {
-            in: [
-              "started",
-              "form_completed",
-              "subscription_pending",
-              "subscription_verified",
-              "consent_pending",
-              "consent_verified",
-              "uniform_payment_pending",
-            ],
-          },
-        },
-        data: { status: "payment_confirmed" },
-      });
+      await markUniformPaid(payment.user_id, payment.uniform_order_id);
     }
     await prisma.audit_log.create({
       data: {
@@ -366,7 +373,34 @@ export const confirmPayment = async (
         details: { reference, source },
       },
     });
+    // Receipt + admin notice. Only the first confirmation reaches this line; notify never throws.
+    await notifyPaymentConfirmed(payment.id, "paystack");
   }
 
   return { state: "confirmed", purpose: payment.purpose };
+};
+
+/** A confirmed uniform payment marks the order paid and moves the member forward (never downgrading approved/active ones). */
+export const markUniformPaid = async (userId: string, orderId: string) => {
+  await prisma.uniform_orders.update({
+    where: { id: orderId },
+    data: { status: "paid" },
+  });
+  await prisma.memberships.updateMany({
+    where: {
+      user_id: userId,
+      status: {
+        in: [
+          "started",
+          "form_completed",
+          "subscription_pending",
+          "subscription_verified",
+          "consent_pending",
+          "consent_verified",
+          "uniform_payment_pending",
+        ],
+      },
+    },
+    data: { status: "payment_confirmed" },
+  });
 };

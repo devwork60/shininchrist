@@ -238,8 +238,7 @@ const MembersTable = ({ applicants }: { applicants: Applicant[] }) => {
             </Link>
             {!a.ready && a.status !== "active" && (
               <span className="text-xs text-text-grey">
-                Needs: verified proof{a.isMinor ? ", verified consent" : ""} and
-                a confirmed uniform payment.
+                Cannot activate yet. Needs: {a.missing.join("; ")}.
               </span>
             )}
             {message?.id === a.userId && (

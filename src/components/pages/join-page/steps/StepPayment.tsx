@@ -3,7 +3,9 @@ import {
   openPaystackCheckout,
   type CheckoutStart,
 } from "@/lib/payments/paystack-checkout";
+} from "@/lib/payments/paystack-checkout";
 import { getJson, postJson } from "../joinApi";
+import BankTransferPanel, { type TransferDetails } from "./BankTransferPanel";
 import StepFrame from "../StepFrame";
 import ManualPaymentPanel from "./ManualPaymentPanel";
 import {
@@ -36,7 +38,7 @@ const StepPayment = ({ details, onBack }: StepPaymentProps) => {
       throw new Error(
         "The uniform price for your country has not been set yet. Please contact us.",
       );
-    const start = await postJson<CheckoutStart>("/api/payments/uniform", {
+    const order = {
       size: details.size,
       quantity: details.quantity,
       deliveryType: details.deliveryType,

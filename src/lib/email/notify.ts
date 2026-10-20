@@ -87,6 +87,12 @@ const paymentContext = async (paymentId: string) => {
   });
   if (!payment) return null;
   const owner = payment.user_id ? await person(payment.user_id) : null;
+  const libraryId = payment.designation?.startsWith("library:")
+    ? payment.designation.slice("library:".length)
+    : null;
+  const resource = libraryId
+    ? await prisma.library_resources.findUnique({ where: { id: libraryId } })
+    : null;
   const name = owner?.name || payment.payer_name || "";
   const email = owner?.email || payment.payer_email || "";
   const facts: t.PaymentFacts = {
@@ -98,7 +104,9 @@ const paymentContext = async (paymentId: string) => {
     item:
       payment.purpose === "uniform" && payment.uniform_orders
         ? `ShininChrist uniform, size ${payment.uniform_orders.size} × ${payment.uniform_orders.quantity}`
-        : payment.purpose === "donation"
+        : resource
+          ? `Library contribution: ${resource.title}`
+          : payment.purpose === "donation"
           ? `Donation${payment.designation ? `: ${payment.designation}` : ""}`
           : undefined,
   };
@@ -124,13 +132,19 @@ export const notifyPaymentConfirmed = async (
   if (by === "paystack") {
     await alertAdmins(
       `paid:${paymentId}`,
-      payment.purpose === "donation" ? "Donation received" : "Uniform payment received",
+      payment.purpose === "donation"
+        ? "Donation received"
+        : payment.purpose === "uniform"
+          ? "Uniform payment received"
+          : "Library contribution received",
       `${name || email || "Someone"} paid ${money(facts.amount, facts.currency)} by card.`,
       [
         { label: "Reference", value: facts.reference },
         { label: "Date", value: dateTime(facts.at) },
       ],
-      payment.purpose === "donation" ? "/admin/payments" : `/admin/members/${payment.user_id}`,
+      payment.purpose === "uniform"
+        ? `/admin/members/${payment.user_id}`
+        : "/admin/payments",
       "Open",
     );
   }

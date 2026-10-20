@@ -55,7 +55,7 @@ export const isActiveMember = async (userId: string) =>
  */
 export const getMemberAccess = async () => {
   const user = await getCurrentUser();
-  if (!user) return { signedIn: false, allowed: false };
+  if (!user) return { signedIn: false, allowed: false, userId: null };
   const allowed = user.isAdmin || (await isActiveMember(user.id));
-  return { signedIn: true, allowed };
+  return { signedIn: true, allowed, userId: user.id };
 };

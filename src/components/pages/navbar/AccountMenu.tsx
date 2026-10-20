@@ -98,6 +98,17 @@ const AccountMenu = ({ name, email, isAdmin }: AccountMenuProps) => {
           )}
           {isAdmin && (
             <li>
+              <Link href="/admin/library" className={row}>
+                <AuthIcons
+                  name="check"
+                  className="h-5 w-5 [&>svg]:h-full [&>svg]:w-full"
+                />
+                Library resources
+              </Link>
+            </li>
+          )}
+          {isAdmin && (
+            <li>
               <Link href="/admin/content" className={row}>
                 <AuthIcons
                   name="check"

@@ -249,7 +249,7 @@ export const startUniformPayment = async (
   );
 };
 
-const checkout = async (
+export const checkout = async (
   paymentId: string,
   reference: string,
   email: string,

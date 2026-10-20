@@ -1,19 +1,20 @@
 import React from "react";
-import { LIBRARY_TAGS } from "@/constant/libraryMemberData";
 
 interface LibraryFilterBarProps {
+  tags: string[];
   activeTag: string;
   onTagChange: (tag: string) => void;
 }
 
 const LibraryFilterBar: React.FC<LibraryFilterBarProps> = ({
+  tags,
   activeTag,
   onTagChange,
 }) => (
   <div className="border-b border-gray-200 bg-white py-4 shadow-sm">
     <div className="wrapper">
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        {LIBRARY_TAGS.map((tag) => {
+        {tags.map((tag) => {
           const isActive = activeTag === tag;
           return (
             <button

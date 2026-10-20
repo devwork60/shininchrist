@@ -639,6 +639,9 @@ model library_resources {
   published_at       DateTime?            @db.Timestamptz(6)
   created_at         DateTime             @default(now()) @db.Timestamptz(6)
   updated_at         DateTime             @default(now()) @db.Timestamptz(6)
+  file_name          String?
+  mime_type          String?
+  file_size          BigInt?
   resource_downloads resource_downloads[]
 
   @@schema("public")
@@ -717,6 +720,7 @@ model payments {
   @@unique([gateway, gateway_ref])
   @@index([status])
   @@index([user_id], map: "payments_user_idx")
+  @@index([designation], where: raw("(designation ~~ 'library:%'::text)"))
   @@schema("public")
 }
 
@@ -752,6 +756,7 @@ model resource_downloads {
   library_resources library_resources @relation(fields: [resource_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   users             users             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@index([user_id, created_at(sort: Desc)], map: "resource_downloads_user_idx")
   @@schema("public")
 }
 

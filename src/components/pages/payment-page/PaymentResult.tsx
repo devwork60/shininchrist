@@ -62,7 +62,9 @@ const PaymentResult = () => {
       text:
         purpose === "uniform"
           ? "Your uniform payment has been received. ShininChrist will complete the remaining checks before activating your account."
-          : "Your gift has been received. A confirmation will be sent to your email. May God bless you.",
+          : purpose === "other"
+            ? "Your contribution has been received. You can now download the resource from the Library. A receipt will be sent to your email."
+            : "Your gift has been received. A confirmation will be sent to your email. May God bless you.",
     },
     pending: {
       title: "We are still confirming your payment.",
@@ -94,9 +96,15 @@ const PaymentResult = () => {
       {view !== "checking" && (
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <ButtonSm
-            url={purpose === "uniform" ? "/join" : "/"}
+            url={
+              purpose === "uniform" ? "/join" : purpose === "other" ? "/library" : "/"
+            }
             text={
-              purpose === "uniform" ? "Continue registration" : "Back to Home"
+              purpose === "uniform"
+                ? "Continue registration"
+                : purpose === "other"
+                  ? "Back to the Library"
+                  : "Back to Home"
             }
             bgColor="var(--primary-green)"
             textColor="var(--white-color)"

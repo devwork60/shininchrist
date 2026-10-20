@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/common-components/Breadcrumb";
 import PaymentReviewList from "@/components/pages/admin-page/PaymentReviewList";
+import PaymentsLedger from "@/components/pages/admin-page/PaymentsLedger";
 import CardDescSm from "@/components/pages/typography/CardDescSm";
 import MainHeading from "@/components/pages/typography/MainHeading";
 import { getAdminUser } from "@/lib/auth";
+import { listLedger } from "@/lib/payments/ledger";
 import { listManualPayments } from "@/lib/payments/manual-review";
 
 export const metadata: Metadata = {
@@ -17,7 +19,7 @@ const AdminPaymentsPage = async () => {
   const admin = await getAdminUser();
   if (!admin) notFound();
 
-  const rows = await listManualPayments();
+  const [rows, ledger] = await Promise.all([listManualPayments(), listLedger()]);
 
   return (
     <main className="flex-1 bg-cream py-10 lg:py-14">
@@ -36,11 +38,14 @@ const AdminPaymentsPage = async () => {
         <CardDescSm className="mt-3 max-w-2xl !text-base !text-text-dark">
           Check each bank-transfer receipt against your bank, then approve or
           reject it. Approving marks the uniform order as paid. Receipt links
-          expire after 10 minutes. Card payments are confirmed automatically by
-          Paystack.
+          expire after 10 minutes. Card payments, donations and Library contributions are confirmed
+          automatically by Paystack and listed in the table below.
         </CardDescSm>
         <div className="mt-6">
           <PaymentReviewList rows={rows} />
+        </div>
+        <div className="mt-10">
+          <PaymentsLedger rows={ledger} />
         </div>
       </div>
     </main>

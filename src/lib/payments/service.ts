@@ -14,7 +14,7 @@ import {
 const GATEWAY = "paystack";
 const SUPPORTED_CURRENCIES = ["NGN", "USD"] as const;
 
-export class PaymentInputError extends Error { }
+export class PaymentInputError extends Error {}
 
 const cleanCurrency = (value: unknown) => {
   const currency = String(value ?? "").toUpperCase();

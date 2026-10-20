@@ -89,45 +89,6 @@ export const initializeTransaction = async (input: InitializeInput) => {
   };
 };
 
-export interface TransferInput {
-  reference: string;
-  email: string;
-  amount: number;
-  currency: string;
-  expiresAt: Date;
-  metadata?: Record<string, unknown>;
-}
-
-/**
- * Pay-by-transfer: Paystack returns a one-time bank account for exactly this amount. We show it on OUR page, so the
- * visitor never needs checkout.paystack.com (which can be blocked by a network or browser check).
- */
-export const createBankTransfer = async (input: TransferInput) => {
-  const data = await request<{
-    reference: string;
-    account_name: string;
-    account_number: string;
-    bank: { name: string } | string;
-    account_expires_at: string;
-  }>("/charge", {
-    method: "POST",
-    body: JSON.stringify({
-      reference: input.reference,
-      email: input.email,
-      amount: toMinorUnits(input.amount),
-      currency: input.currency,
-      bank_transfer: { account_expires_at: input.expiresAt.toISOString() },
-      metadata: input.metadata,
-    }),
-  });
-  return {
-    accountName: data.account_name,
-    accountNumber: data.account_number,
-    bankName: typeof data.bank === "string" ? data.bank : data.bank?.name,
-    expiresAt: data.account_expires_at,
-  };
-};
-
 export interface VerifiedTransaction {
   status: string;
   reference: string;

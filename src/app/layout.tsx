@@ -8,16 +8,19 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const dancing = Dancing_Script({
   variable: "--font-dancing",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const DESCRIPTION =
@@ -43,6 +46,9 @@ const ORGANIZATION_DATA = {
   description: DESCRIPTION,
 };
 
+import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/pages/store-page/CartDrawer";
+
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   // The menu labels and links are admin-editable; the design (icons, descriptions) is kept.
   const navItems = await getNavItems();
@@ -57,8 +63,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_DATA) }}
         />
-        <Navbar items={navItems} />
-        {children}
+        <CartProvider>
+          <Navbar items={navItems} />
+          {children}
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );

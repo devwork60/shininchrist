@@ -104,11 +104,13 @@ const paymentContext = async (paymentId: string) => {
     item:
       payment.purpose === "uniform" && payment.uniform_orders
         ? `ShininChrist uniform, size ${payment.uniform_orders.size} × ${payment.uniform_orders.quantity}`
-        : resource
-          ? `Library contribution: ${resource.title}`
-          : payment.purpose === "donation"
-          ? `Donation${payment.designation ? `: ${payment.designation}` : ""}`
-          : undefined,
+        : payment.purpose === "store_order"
+          ? payment.designation ?? "Store Order"
+          : resource
+            ? `Library contribution: ${resource.title}`
+            : payment.purpose === "donation"
+              ? `Donation${payment.designation ? `: ${payment.designation}` : ""}`
+              : undefined,
   };
   return { payment, name, email, facts };
 };
@@ -136,7 +138,9 @@ export const notifyPaymentConfirmed = async (
         ? "Donation received"
         : payment.purpose === "uniform"
           ? "Uniform payment received"
-          : "Library contribution received",
+          : payment.purpose === "store_order"
+            ? "Store order payment received"
+            : "Library contribution received",
       `${name || email || "Someone"} paid ${money(facts.amount, facts.currency)} by card.`,
       [
         { label: "Reference", value: facts.reference },
@@ -228,3 +232,26 @@ export const notifySuspension = async (
       : t.membershipReinstated(name),
   );
 };
+
+export const notifyFormSubmission = async (
+  typeLabel: string,
+  reference: string,
+  name: string,
+  email: string,
+  summaryRows: { label: string; value: string }[],
+) => {
+  await alertAdmins(
+    `form_sub:${reference}`,
+    `New submission: ${typeLabel}`,
+    `A new ${typeLabel} was received from ${name || email}.`,
+    [
+      { label: "Reference", value: reference },
+      { label: "Name", value: name || "—" },
+      { label: "Email", value: email || "—" },
+      ...summaryRows,
+    ],
+    "/admin/submissions",
+    "Open Submissions",
+  );
+};
+

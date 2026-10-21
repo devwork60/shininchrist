@@ -15,6 +15,7 @@ import {
   type NavItem,
 } from "@/constant/navData";
 import { useAuthUser } from "@/hooks/useAuthUser";
+import CartButton from "@/components/pages/store-page/CartButton";
 import AccountMenu from "./AccountMenu";
 import MobileMenu from "./MobileMenu";
 import NavDropdown from "./NavDropdown";
@@ -35,6 +36,7 @@ const Navbar = ({ items }: { items: NavItem[] }) => {
             width={1665}
             height={265}
             priority
+            sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 240px"
             className="h-9 w-auto sm:h-11 lg:max-xl:!h-7"
           />
         </Link>
@@ -71,7 +73,7 @@ const Navbar = ({ items }: { items: NavItem[] }) => {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-0 xl:gap-1.5">
+        <div className="flex items-center gap-1 xl:gap-2">
           <Link
             href={SEARCH_LINK.href}
             aria-label={SEARCH_LINK.label}
@@ -79,6 +81,7 @@ const Navbar = ({ items }: { items: NavItem[] }) => {
           >
             <SearchIcon className="h-5 w-5" />
           </Link>
+          <CartButton />
           {user ? (
             <AccountMenu
               name={user.name}
@@ -121,6 +124,7 @@ const Navbar = ({ items }: { items: NavItem[] }) => {
         <MobileMenu
           items={items}
           signedIn={signedIn}
+          isAdmin={isAdmin}
           pathname={pathname}
           onNavigate={() => setOpen(false)}
         />

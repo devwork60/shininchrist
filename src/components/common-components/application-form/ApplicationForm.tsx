@@ -16,20 +16,30 @@ const ApplicationForm = ({ config }: { config: FormConfig }) => {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
+  const FORM_TYPE_MAP: Record<string, string> = {
+    "volunteer-time-form": "volunteer_time",
+    "volunteer-skills-form": "volunteer_skills",
+    "serve-prayer-form": "serve_prayer",
+    "field-service-form": "field_service",
+    "partner-form": "partner",
+    "give-inkind-form": "give_in_kind",
+    "give-property-form": "give_property",
+  };
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const body: Record<string, FormDataEntryValue | FormDataEntryValue[]> = {};
+    for (const key of new Set(form.keys())) {
+      const values = form.getAll(key);
+      body[key] = values.length > 1 ? values : values[0];
+    }
+
+    setBusy(true);
+    setError("");
 
     // Payment forms: send the details to our server, then go to the secure checkout it returns.
     if (config.submitTo) {
-      const form = new FormData(event.currentTarget);
-      const body: Record<string, FormDataEntryValue | FormDataEntryValue[]> =
-        {};
-      for (const key of new Set(form.keys())) {
-        const values = form.getAll(key);
-        body[key] = values.length > 1 ? values : values[0];
-      }
-      setBusy(true);
-      setError("");
       try {
         const res = await fetch(config.submitTo, {
           method: "POST",
@@ -52,8 +62,34 @@ const ApplicationForm = ({ config }: { config: FormConfig }) => {
       return;
     }
 
-    setSubmitted(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Save submission to database and trigger admin email alert
+    const formType =
+      FORM_TYPE_MAP[config.id] ??
+      config.id.replace(/-/g, "_").replace(/_form$/, "");
+
+    try {
+      const res = await fetch("/api/forms/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: formType,
+          data: body,
+          name: String(body.fullName || body.name || ""),
+          email: String(body.email || ""),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Could not save your submission. Please try again.");
+        setBusy(false);
+        return;
+      }
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      setError("Could not reach the server. Please check your connection and try again.");
+    }
+    setBusy(false);
   };
 
   if (submitted) {

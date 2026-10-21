@@ -13,6 +13,7 @@ export interface Applicant {
   whatsapp: string;
   isMinor: boolean;
   status: string;
+  chapter: string | null;
   proofStatus: string;
   consentStatus: string;
   platform: string | null;
@@ -90,6 +91,7 @@ export const listApplicants = async (): Promise<Applicant[]> => {
         whatsapp: profile?.whatsapp ?? "",
         isMinor: m.is_minor,
         status: m.status,
+        chapter: m.chapter,
         proofStatus: m.proof_status,
         consentStatus: m.consent_status,
         platform: m.social_platform,
@@ -443,9 +445,13 @@ export const getMemberDetail = async (
 };
 
 const NEXT_ORDER_STATUS: Record<string, string[]> = {
-  paid: ["preparing", "shipped", "delivered"],
-  preparing: ["shipped", "delivered"],
-  shipped: ["delivered"],
+  requested: ["cancelled"],
+  payment_pending: ["cancelled"],
+  paid: ["preparing", "shipped", "delivered", "cancelled"],
+  preparing: ["shipped", "delivered", "cancelled"],
+  shipped: ["delivered", "cancelled"],
+  delivered: [],
+  cancelled: [],
 };
 
 /** Moves a PAID uniform order forward: preparing, shipped, delivered. Unpaid orders cannot be moved. */
@@ -553,5 +559,97 @@ export const saveUniformPrice = async (
       target: countryCode,
       details: { currency, uniformPrice, deliveryFee, active },
     },
+  });
+};
+
+/** Admin only: change a member's chapter (men, women, youth). */
+export const updateMemberChapter = async (
+  adminId: string,
+  userId: string,
+  chapter: "men" | "women" | "youth",
+) => {
+  const membership = await prisma.memberships.findUnique({
+    where: { user_id: userId },
+  });
+  if (!membership) throw new JoinInputError("Member not found.");
+
+  const oldChapter = membership.chapter;
+  const updated = await prisma.memberships.update({
+    where: { user_id: userId },
+    data: { chapter },
+  });
+
+  await prisma.audit_log.create({
+    data: {
+      actor_id: adminId,
+      action: "membership.change_chapter",
+      target: userId,
+      details: { from: oldChapter, to: chapter },
+    },
+  });
+
+  return updated;
+};
+
+export interface AdminOrderRow {
+  id: string;
+  reference: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  uniformType: string;
+  size: string;
+  quantity: number;
+  deliveryType: string | null;
+  deliveryAddress: string;
+  deliveryCity: string;
+  deliveryState: string | null;
+  deliveryPhone: string;
+  countryCode: string;
+  uniformCost: number | null;
+  deliveryCost: number | null;
+  total: number | null;
+  currency: string;
+  status: string;
+  createdAt: string;
+}
+
+/** Lists all uniform orders across all members for centralized admin management. */
+export const listAllUniformOrders = async (): Promise<AdminOrderRow[]> => {
+  const orders = await prisma.uniform_orders.findMany({
+    orderBy: { created_at: "desc" },
+    take: 300,
+  });
+
+  const userIds = [...new Set(orders.map((o) => o.user_id))];
+  const profiles = await prisma.profiles.findMany({
+    where: { id: { in: userIds } },
+    select: { id: true, full_name: true, email: true },
+  });
+
+  return orders.map((o) => {
+    const profile = profiles.find((p) => p.id === o.user_id);
+    return {
+      id: o.id,
+      reference: o.reference,
+      userId: o.user_id,
+      userName: profile?.full_name ?? "—",
+      userEmail: profile?.email ?? "—",
+      uniformType: o.uniform_type,
+      size: o.size,
+      quantity: o.quantity,
+      deliveryType: o.delivery_type,
+      deliveryAddress: o.delivery_address,
+      deliveryCity: o.delivery_city,
+      deliveryState: o.delivery_state,
+      deliveryPhone: o.delivery_phone,
+      countryCode: o.country_code,
+      uniformCost: o.uniform_cost ? Number(o.uniform_cost) : null,
+      deliveryCost: o.delivery_cost ? Number(o.delivery_cost) : null,
+      total: o.total ? Number(o.total) : null,
+      currency: o.currency,
+      status: o.status,
+      createdAt: o.created_at.toISOString(),
+    };
   });
 };

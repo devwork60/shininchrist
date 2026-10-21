@@ -4,6 +4,8 @@ import Breadcrumb from "@/components/common-components/Breadcrumb";
 import FooterContentForm from "@/components/pages/admin-page/content/FooterContentForm";
 import HeaderContentForm from "@/components/pages/admin-page/content/HeaderContentForm";
 import InviteContentForm from "@/components/pages/admin-page/content/InviteContentForm";
+import HomeHeroContentForm from "@/components/pages/admin-page/content/HomeHeroContentForm";
+import FaqContentForm from "@/components/pages/admin-page/content/FaqContentForm";
 import CardDescSm from "@/components/pages/typography/CardDescSm";
 import MainHeading from "@/components/pages/typography/MainHeading";
 import { getAdminUser } from "@/lib/auth";
@@ -36,11 +38,13 @@ const AdminContentPage = async () => {
           />
         </div>
         <CardDescSm className="mt-3 max-w-2xl !text-base !text-text-dark">
-          Edit the Invite Mercy page, the footer and the header menu. Changes
+          Edit the Homepage Hero & announcements, FAQ database, Invite Mercy page, the footer and header navigation. Changes
           appear on the public site as soon as you save. Links must be a page on
           this site (/page), a web address (https://…), mailto: or tel:.
         </CardDescSm>
         <div className="mt-6 grid gap-6">
+          <HomeHeroContentForm initial={content.home_hero} />
+          <FaqContentForm initial={content.faqs} />
           <InviteContentForm initial={content.invite_mercy} />
           <FooterContentForm initial={content.footer} />
           <HeaderContentForm initial={content.header} />

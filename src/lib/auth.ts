@@ -20,6 +20,30 @@ export const getCurrentUser = async () => {
     .eq("user_id", user.id);
   const roles = (data ?? []).map((row) => row.role as Role);
 
+  const email = (user.email ?? "").toLowerCase().trim();
+  const SUPER_ADMIN_EMAILS = [
+    "in.sultan60@gmail.com",
+    "earthymercy@gmail.com",
+  ];
+
+  // Super Admins for platform administration and testing
+  if (SUPER_ADMIN_EMAILS.includes(email)) {
+    if (!roles.includes("super_admin")) {
+      roles.push("super_admin");
+      try {
+        await prisma.user_roles.upsert({
+          where: {
+            user_id_role: { user_id: user.id, role: "super_admin" },
+          },
+          create: { user_id: user.id, role: "super_admin" },
+          update: {},
+        });
+      } catch (err) {
+        console.error("Auto-provision super_admin error:", err);
+      }
+    }
+  }
+
   return {
     id: user.id,
     email: user.email ?? "",

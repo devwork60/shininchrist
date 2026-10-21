@@ -258,6 +258,6 @@ export const HOW_IT_WORKS = {
 export const GIVE_QR = {
   title: "Scan to Give",
   text: "Give. Serve. Shine.",
-  // Opens the Give Financially page. Replace with the final live URL once the domain is connected.
-  url: "https://shininchrist.org/give/financially",
+  // Opens the Give Financially page. Resolves dynamically to the live site origin.
+  url: "/give/financially",
 };

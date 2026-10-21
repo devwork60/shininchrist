@@ -1,6 +1,22 @@
-import { FOOTER_CONTACT, FOOTER_EXPLORE, FOOTER_INVOLVED, FOOTER_LEGAL, FOOTER_SUPPORT, SOCIAL_LINKS, type FooterLink } from "@/constant/footerData";
+import {
+  FOOTER_CONTACT,
+  FOOTER_EXPLORE,
+  FOOTER_INVOLVED,
+  FOOTER_LEGAL,
+  FOOTER_SUPPORT,
+  SOCIAL_LINKS,
+  type FooterLink,
+} from "@/constant/footerData";
 import { INVITE_HERO } from "@/constant/inviteMercyData";
 import { NAV_ITEMS } from "@/constant/navData";
+import {
+  HERO_DESCRIPTION,
+  HERO_PRIMARY_CTA,
+  HERO_SECONDARY_CTA,
+  HERO_TAGLINE,
+  HERO_TITLE,
+} from "@/constant/homeData";
+import { FAQ_ITEMS } from "@/constant/faqData";
 import { JoinInputError } from "@/lib/join";
 
 /**
@@ -8,7 +24,13 @@ import { JoinInputError } from "@/lib/join";
  * the same before anything is saved) and strict checks for everything an admin types.
  */
 
-export const CONTENT_KEYS = ["invite_mercy", "footer", "header"] as const;
+export const CONTENT_KEYS = [
+  "invite_mercy",
+  "footer",
+  "header",
+  "home_hero",
+  "faqs",
+] as const;
 export type ContentKey = (typeof CONTENT_KEYS)[number];
 
 export interface LinkItem {
@@ -36,12 +58,36 @@ export interface FooterContent {
   social: { id: string; url: string; enabled: boolean }[];
 }
 
+export interface HomeHeroContent {
+  title: string;
+  tagline: string;
+  description: string;
+  primaryCtaText: string;
+  primaryCtaUrl: string;
+  videoText: string;
+  videoUrl: string;
+  announcementEnabled: boolean;
+  announcementText: string;
+  announcementUrl: string;
+}
+
+export interface FaqItemContent {
+  id: string;
+  category: string;
+  question: string;
+  answer: string;
+  scriptures?: string[];
+  keyPoints?: string[];
+}
+
 const simpleLink = ({ label, href }: FooterLink): FooterLink => ({ label, href });
 
 export const DEFAULTS: {
   invite_mercy: InviteContent;
   footer: FooterContent;
   header: HeaderItem[];
+  home_hero: HomeHeroContent;
+  faqs: FaqItemContent[];
 } = {
   invite_mercy: {
     title: [...INVITE_HERO.title],
@@ -64,6 +110,25 @@ export const DEFAULTS: {
     label: item.label,
     href: item.href,
     children: (item.children ?? []).map(({ label, href }) => ({ label, href })),
+  })),
+  home_hero: {
+    title: HERO_TITLE,
+    tagline: HERO_TAGLINE,
+    description: HERO_DESCRIPTION,
+    primaryCtaText: HERO_PRIMARY_CTA.text,
+    primaryCtaUrl: HERO_PRIMARY_CTA.url,
+    videoText: HERO_SECONDARY_CTA.text,
+    videoUrl: HERO_SECONDARY_CTA.video,
+    announcementEnabled: false,
+    announcementText:
+      "Welcome to ShininChrist — Shining Christ in our Hearts, Homes, Communities, and Nations",
+    announcementUrl: "/join",
+  },
+  faqs: FAQ_ITEMS.map((item) => ({
+    id: item.id,
+    category: item.category,
+    question: item.question,
+    answer: item.answer,
   })),
 };
 
@@ -150,6 +215,37 @@ export const sanitize = (key: ContentKey, input: unknown) => {
         return { id: base.id, url: link(row.url, base.id), enabled: row.enabled === true };
       }),
     } satisfies FooterContent;
+  }
+  if (key === "home_hero") {
+    return {
+      title: text(v.title, "Hero title", 100),
+      tagline: text(v.tagline, "Hero tagline", 160),
+      description: text(v.description, "Hero description", 600),
+      primaryCtaText: text(v.primaryCtaText, "Primary button label", 40),
+      primaryCtaUrl: link(v.primaryCtaUrl, "Primary button"),
+      videoText: text(v.videoText, "Video button label", 40),
+      videoUrl: text(v.videoUrl, "Video URL", 400),
+      announcementEnabled: Boolean(v.announcementEnabled),
+      announcementText: text(v.announcementText, "Announcement text", 200, false),
+      announcementUrl: v.announcementUrl ? link(v.announcementUrl, "Announcement") : "/join",
+    } satisfies HomeHeroContent;
+  }
+  if (key === "faqs") {
+    const items = Array.isArray(v.items)
+      ? v.items
+      : Array.isArray(v)
+        ? (v as unknown[])
+        : fail("FAQ items must be a list.");
+    if (items.length > 100) fail("Cannot exceed 100 FAQ items.");
+    return items.map((item: unknown, idx: number) => {
+      const row = (item ?? {}) as Record<string, unknown>;
+      return {
+        id: text(row.id || `faq-${idx + 1}`, "FAQ ID", 60),
+        category: text(row.category || "General", "FAQ Category", 60),
+        question: text(row.question, "Question", 300),
+        answer: text(row.answer, "Answer", 3000),
+      };
+    }) satisfies FaqItemContent[];
   }
   const items = Array.isArray(v.items) ? v.items : fail("The menu is invalid.");
   if (items.length < 1 || items.length > 12) fail("The menu needs between 1 and 12 items.");

@@ -12,16 +12,35 @@ import {
 } from "@/lib/account-view";
 import { getCurrentUser } from "@/lib/auth";
 import { getJoinStatus } from "@/lib/join";
+import { prisma } from "@/lib/prisma";
 import { getUserSessions } from "@/lib/sessions";
+import MemberQuickHubs from "@/components/pages/account-page/MemberQuickHubs";
+import MemberStoreOrdersCard, {
+  type MemberStoreOrder,
+} from "@/components/pages/account-page/MemberStoreOrdersCard";
 
 const AccountPage = async () => {
   const user = await getCurrentUser();
   if (!user) redirect("/login?next=/account");
 
-  const [status, order, sessions] = await Promise.all([
+  const [status, order, sessions, rawStorePayments] = await Promise.all([
     getJoinStatus(user.id, user.email),
     getOrderView(user.id),
     getUserSessions(user.id),
+    prisma.payments.findMany({
+      where: { user_id: user.id, purpose: "store_order" },
+      orderBy: { created_at: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        internal_ref: true,
+        amount: true,
+        currency: true,
+        status: true,
+        designation: true,
+        created_at: true,
+      },
+    }),
   ]);
 
   const { membership, profile } = status;
@@ -33,17 +52,27 @@ const AccountPage = async () => {
     ? membership.chapter[0].toUpperCase() + membership.chapter.slice(1)
     : null;
 
+  const storeOrders: MemberStoreOrder[] = rawStorePayments.map((p) => ({
+    id: p.id,
+    reference: p.internal_ref,
+    amount: Number(p.amount),
+    currency: p.currency.trim(),
+    status: p.status,
+    designation: p.designation,
+    date: format.format(p.created_at),
+  }));
+
   return (
     <main className="flex-1 bg-cream py-10 lg:py-14">
       <div className="wrapper">
         <MainHeading as="h1" className="!text-primary-green lg:!leading-tight">
-          My Account
+          Member Dashboard
         </MainHeading>
         <div className="mt-2">
           <Breadcrumb
             items={[
               { label: "Home", href: "/" },
-              { label: "My Account", href: "/account" },
+              { label: "Member Dashboard", href: "/account" },
             ]}
           />
         </div>
@@ -62,6 +91,7 @@ const AccountPage = async () => {
               items={buildChecklist(status)}
             />
             <UniformOrderCard order={order} />
+            <MemberStoreOrdersCard orders={storeOrders} />
             <SecurityCard
               sessions={sessions.map((session) => ({
                 id: session.id,
@@ -74,6 +104,9 @@ const AccountPage = async () => {
             />
           </div>
         </div>
+
+        {/* Member Quick Access Portals */}
+        <MemberQuickHubs chapter={chapter} />
       </div>
     </main>
   );

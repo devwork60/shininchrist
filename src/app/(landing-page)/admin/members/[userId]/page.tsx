@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/common-components/Breadcrumb";
 import MemberAccessPanel from "@/components/pages/admin-page/MemberAccessPanel";
 import OrderStatusControl from "@/components/pages/admin-page/OrderStatusControl";
+import ChapterSelectControl from "@/components/pages/admin-page/ChapterSelectControl";
 import MainHeading from "@/components/pages/typography/MainHeading";
 import { countryName } from "@/constant/countries";
 import { getAdminUser } from "@/lib/auth";
@@ -147,7 +148,14 @@ const MemberDetailPage = async ({
               rows={[
                 ["Status", <strong key="s">{words(membership.status)}</strong>],
                 ["Member ID", membership.memberId ?? "Not issued yet"],
-                ["Chapter", membership.chapter ?? "—"],
+                [
+                  "Chapter",
+                  <ChapterSelectControl
+                    key="chap"
+                    userId={userId}
+                    initialChapter={membership.chapter}
+                  />,
+                ],
                 ["Roles", m.roles.map(words).join(", ") || "—"],
                 ["Under 18", membership.isMinor ? "Yes" : "No"],
                 [

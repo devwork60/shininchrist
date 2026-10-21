@@ -1,5 +1,6 @@
 import { EARLY_STATUSES, missingProfileFields } from "@/lib/join";
 import { DELIVERY_TYPES } from "@/constant/deliveryTypes";
+import { STORE_PRODUCTS } from "@/constant/storeData";
 import { notifyPaymentConfirmed } from "@/lib/email/notify";
 import { prisma } from "@/lib/prisma";
 import {
@@ -98,6 +99,126 @@ export const startDonation = async (
     {
       purpose: "donation",
       designation: payment.designation,
+    },
+  );
+};
+
+export interface StoreOrderCustomer {
+  [key: string]: string | undefined;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state?: string;
+  country: string;
+  notes?: string;
+}
+
+export interface StoreOrderInput {
+  items: Array<{ slug: string; quantity: number }>;
+  customer: StoreOrderCustomer;
+  currency?: "USD" | "NGN";
+}
+
+/** Multi-item store cart checkout with Paystack */
+export const startStoreOrderPayment = async (
+  input: StoreOrderInput,
+  origin: string,
+  userId?: string,
+) => {
+  assertPaystackConfigured();
+
+  if (!input.items || !Array.isArray(input.items) || input.items.length === 0) {
+    throw new PaymentInputError("Your cart is empty.");
+  }
+
+  const { customer } = input;
+  if (
+    !customer?.name?.trim() ||
+    !customer?.email?.trim() ||
+    !customer?.phone?.trim() ||
+    !customer?.address?.trim() ||
+    !customer?.city?.trim()
+  ) {
+    throw new PaymentInputError(
+      "Please complete all required contact and shipping details.",
+    );
+  }
+  const email = cleanEmail(customer.email);
+
+  let subtotal = 0;
+  const itemSummaries: Array<{
+    slug: string;
+    title: string;
+    quantity: number;
+    unitPrice: number;
+    lineTotal: number;
+  }> = [];
+
+  for (const cartItem of input.items) {
+    const product = STORE_PRODUCTS.find((p) => p.slug === cartItem.slug);
+    if (!product) {
+      throw new PaymentInputError(`Product '${cartItem.slug}' could not be found.`);
+    }
+    const numericPrice = product.price
+      ? parseFloat(product.price.replace(/[^0-9.]/g, ""))
+      : 0;
+    if (isNaN(numericPrice) || numericPrice <= 0) {
+      throw new PaymentInputError(`Pricing for '${product.title}' is coming soon.`);
+    }
+    const qty = Math.max(1, Math.min(50, Math.floor(Number(cartItem.quantity) || 1)));
+    const lineTotal = numericPrice * qty;
+    subtotal += lineTotal;
+
+    itemSummaries.push({
+      slug: product.slug,
+      title: product.title,
+      quantity: qty,
+      unitPrice: numericPrice,
+      lineTotal,
+    });
+  }
+
+  const currency = input.currency === "NGN" ? "NGN" : "USD";
+  const totalAmount =
+    currency === "NGN"
+      ? Math.round(subtotal * 1500)
+      : Math.round(subtotal * 100) / 100;
+
+  const payment = await prisma.payments.create({
+    data: {
+      purpose: "store_order",
+      user_id: userId ?? null,
+      amount: totalAmount,
+      currency,
+      gateway: GATEWAY,
+      status: "created",
+      payer_name: customer.name.trim().slice(0, 120),
+      payer_email: email,
+      country_code: (customer.country || "US").slice(0, 2).toUpperCase(),
+      designation: `Store Order: ${itemSummaries
+        .map((i) => `${i.title} (x${i.quantity})`)
+        .join(", ")}`.slice(0, 120),
+      raw_event: {
+        items: itemSummaries,
+        shipping: customer,
+        subtotalUsd: subtotal,
+      },
+    },
+  });
+
+  return checkout(
+    payment.id,
+    payment.internal_ref,
+    email,
+    totalAmount,
+    currency,
+    origin,
+    {
+      purpose: "store_order",
+      orderRef: payment.internal_ref,
+      itemCount: itemSummaries.length,
     },
   );
 };

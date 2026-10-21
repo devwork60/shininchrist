@@ -16,6 +16,7 @@ import {
 interface MobileMenuProps {
   items: NavItem[];
   signedIn?: boolean;
+  isAdmin?: boolean;
   pathname: string;
   onNavigate: () => void;
 }
@@ -29,6 +30,7 @@ const linkClass = (active: boolean) =>
 const MobileMenu = ({
   items,
   signedIn = false,
+  isAdmin = false,
   pathname,
   onNavigate,
 }: MobileMenuProps) => {
@@ -114,13 +116,24 @@ const MobileMenu = ({
             {SEARCH_LINK.label}
           </Link>
         </li>
+        {signedIn && isAdmin && (
+          <li>
+            <Link
+              href="/admin"
+              onClick={onNavigate}
+              className={clsx(linkClass(pathname === "/admin"), "!text-primary-gold font-bold")}
+            >
+              ★ Admin Portal
+            </Link>
+          </li>
+        )}
         <li>
           <Link
             href={signedIn ? "/account" : LOGIN_CTA.href}
             onClick={onNavigate}
-            className={linkClass(false)}
+            className={linkClass(pathname === "/account")}
           >
-            {signedIn ? "My Account" : LOGIN_CTA.label}
+            {signedIn ? "Member Dashboard" : LOGIN_CTA.label}
           </Link>
         </li>
         <li className="py-3">

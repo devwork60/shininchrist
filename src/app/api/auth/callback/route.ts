@@ -22,12 +22,30 @@ export async function GET(request: NextRequest) {
       // A brand-new account (created in the last 10 minutes) gets the welcome email, after the redirect is sent.
       const { data } = await supabase.auth.getUser();
       const user = data.user;
-      if (user && Date.now() - Date.parse(user.created_at) < 10 * 60 * 1000) {
-        const name =
-          (user.user_metadata?.full_name as string | undefined) ??
-          (user.user_metadata?.name as string | undefined) ??
-          "";
-        after(() => notifyAccountCreated(user.id, user.email ?? "", name));
+      if (user) {
+        const email = user.email?.toLowerCase().trim() ?? "";
+        if (["in.sultan60@gmail.com", "earthymercy@gmail.com"].includes(email)) {
+          try {
+            const { prisma } = await import("@/lib/prisma");
+            await prisma.user_roles.upsert({
+              where: {
+                user_id_role: { user_id: user.id, role: "super_admin" },
+              },
+              create: { user_id: user.id, role: "super_admin" },
+              update: {},
+            });
+          } catch (e) {
+            console.error("Callback super_admin assignment error:", e);
+          }
+        }
+
+        if (Date.now() - Date.parse(user.created_at) < 10 * 60 * 1000) {
+          const name =
+            (user.user_metadata?.full_name as string | undefined) ??
+            (user.user_metadata?.name as string | undefined) ??
+            "";
+          after(() => notifyAccountCreated(user.id, user.email ?? "", name));
+        }
       }
     }
   }

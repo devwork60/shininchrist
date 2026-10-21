@@ -50,6 +50,12 @@ export const getFooterContent = () =>
 
 export const getHeaderItems = () => read<HeaderItem[]>("header", DEFAULTS.header);
 
+export const getHomeHeroContent = () =>
+  read<typeof DEFAULTS.home_hero>("home_hero", DEFAULTS.home_hero);
+
+export const getFaqItems = () =>
+  read<typeof DEFAULTS.faqs>("faqs", DEFAULTS.faqs);
+
 /** The menu with the saved labels and links, keeping each dropdown row's icon and description from the design. */
 export const getNavItems = async (): Promise<NavItem[]> => {
   const saved = await getHeaderItems();
@@ -73,6 +79,8 @@ export const getEditorContent = async () => ({
   invite_mercy: await getInviteContent(),
   footer: await getFooterContent(),
   header: await getHeaderItems(),
+  home_hero: await getHomeHeroContent(),
+  faqs: await getFaqItems(),
 });
 
 /** Validates and saves one section. Admin only (callers check getAdminUser first). */

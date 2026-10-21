@@ -8,12 +8,44 @@ import InviteFormField from "./InviteFormField";
 
 const InviteForm = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
 
-  // TODO: send the invitation to the backend / email provider once it exists.
-  // For now the form only validates in the browser and shows the confirmation.
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
+    setBusy(true);
+    setError("");
+
+    const form = new FormData(event.currentTarget);
+    const body: Record<string, FormDataEntryValue | FormDataEntryValue[]> = {};
+    for (const key of new Set(form.keys())) {
+      const values = form.getAll(key);
+      body[key] = values.length > 1 ? values : values[0];
+    }
+
+    try {
+      const res = await fetch("/api/forms/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "invite_mercy",
+          data: body,
+          name: String(body.fullName || body.contactName || body.name || ""),
+          email: String(body.email || ""),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Could not submit your invitation. Please try again.");
+        setBusy(false);
+        return;
+      }
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      setError("Could not reach the server. Please check your connection and try again.");
+    }
+    setBusy(false);
   };
 
   return (
@@ -25,6 +57,12 @@ const InviteForm = () => {
         {INVITE_FORM.title}
       </MainHeading>
       <CardDescSm className="mt-1">{INVITE_FORM.intro}</CardDescSm>
+
+      {error && (
+        <p className="mt-4 rounded-md border border-red-300 bg-red-50 p-3 text-xs text-red-700">
+          {error}
+        </p>
+      )}
 
       {submitted ? (
         <p
@@ -55,9 +93,10 @@ const InviteForm = () => {
 
           <button
             type="submit"
-            className="rounded-md bg-primary-green px-5 py-3 text-sm font-semibold text-white-color transition-colors hover:bg-primary-green-deep"
+            disabled={busy}
+            className="rounded-md bg-primary-green px-5 py-3 text-sm font-semibold text-white-color transition-colors hover:bg-primary-green-deep disabled:opacity-50"
           >
-            {INVITE_FORM.submit}
+            {busy ? "Submitting..." : INVITE_FORM.submit}
           </button>
           <CardDescSm className="text-center !text-xs">
             {INVITE_FORM.note}

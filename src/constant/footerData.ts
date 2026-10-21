@@ -114,7 +114,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
     id: "whatsapp",
     icon: "whatsapp",
     label: "WhatsApp",
-    url: "#",
+    url: "https://wa.me/?text=Hello%20ShininChrist%20Ministry",
     enabled: true,
   },
 ];

@@ -27,22 +27,25 @@ const FooterConnect = ({ social }: FooterConnectProps) => {
       </FooterText>
 
       <ul className="mt-5 grid max-w-[340px] grid-cols-5 gap-x-2">
-        {links.map((link) => (
-          <li key={link.id}>
-            <Link
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-col items-center gap-1.5 text-[11px] text-white-color/90 transition-opacity hover:opacity-80"
-            >
-              <SocialIcons
-                name={link.icon}
-                className="[&>svg]:h-10 [&>svg]:w-10 2xl:[&>svg]:h-[52px] 2xl:[&>svg]:w-[52px]"
-              />
-              <span className="text-[11px] leading-none">{link.label}</span>
-            </Link>
-          </li>
-        ))}
+        {links.map((link) => {
+          const href = !link.url || link.url === "#" ? "/contact" : link.url;
+          const isExternal = href.startsWith("http");
+          return (
+            <li key={link.id}>
+              <Link
+                href={href}
+                {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="flex flex-col items-center gap-1.5 text-[11px] text-white-color/90 transition-opacity hover:opacity-80"
+              >
+                <SocialIcons
+                  name={link.icon}
+                  className="[&>svg]:h-10 [&>svg]:w-10 2xl:[&>svg]:h-[52px] 2xl:[&>svg]:w-[52px]"
+                />
+                <span className="text-[11px] leading-none">{link.label}</span>
+              </Link>
+            </li>
+          );
+        })}
       </ul>
 
       <span

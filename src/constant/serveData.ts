@@ -121,7 +121,7 @@ export const SERVE_CTA = {
     "Whether you can give a few hours, a special skill, needed supplies or ongoing support, there is a place for you at ShininChrist.",
   primary: { text: "Become a Volunteer", url: "/serve/volunteer" },
   secondary: { text: "Contact Our Serve Team", url: "/contact" },
-  qrUrl: "https://shininchrist.org/serve/volunteer",
+  qrUrl: "/serve/volunteer",
   qrTitle: "Scan to Volunteer",
   qrText: "Join. Serve. Shine.",
 };

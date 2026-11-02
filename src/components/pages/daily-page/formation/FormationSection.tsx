@@ -1,19 +1,24 @@
-import { FORMATION_STEPS } from "@/constant/dailyData";
+import { getDailyToday } from "@/lib/site-content";
 import FormationHeader from "./FormationHeader";
 import FormationStepCard from "./FormationStepCard";
 
-const FormationSection = () => (
-  <section className="bg-cream py-10 lg:py-14">
-    <div className="wrapper">
-      <FormationHeader />
+/** The activities strip on /daily. It shows the same editable activities, in the same order, as the Today page. */
+const FormationSection = async () => {
+  const content = await getDailyToday();
 
-      <div className="mt-8 grid gap-x-4 gap-y-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        {FORMATION_STEPS.map(({ id, ...step }) => (
-          <FormationStepCard key={id} {...step} />
-        ))}
+  return (
+    <section className="bg-cream py-10 lg:py-14">
+      <div className="wrapper">
+        <FormationHeader verse={content.verse} reference={content.verseReference} />
+
+        <div className="mt-8 grid gap-x-4 gap-y-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          {content.steps.map((step, index) => (
+            <FormationStepCard key={step.id} number={index + 1} step={step} />
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default FormationSection;

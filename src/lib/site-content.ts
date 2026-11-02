@@ -7,6 +7,8 @@ import {
   DEFAULTS,
   sanitize,
   type ContentKey,
+  type DailyEntry,
+  type DailyTodayContent,
   type FooterContent,
   type HeaderItem,
   type InviteContent,
@@ -56,6 +58,23 @@ export const getHomeHeroContent = () =>
 export const getFaqItems = () =>
   read<typeof DEFAULTS.faqs>("faqs", DEFAULTS.faqs);
 
+/** The Daily Today page: the activities (in order), the verse and the watch / listen options. */
+export const getDailyToday = () =>
+  read<DailyTodayContent>("daily_today", DEFAULTS.daily_today);
+
+/**
+ * The dated Daily entries. `saved` is false until an admin saves a list, so the sample entries keep showing
+ * (as they always have) until real ones are added.
+ */
+export const getDailyEntries = async (): Promise<{
+  entries: DailyEntry[];
+  saved: boolean;
+}> => {
+  const saved = await load("daily_entries");
+  const entries = await read<DailyEntry[]>("daily_entries", DEFAULTS.daily_entries);
+  return { entries, saved: Boolean(saved) && entries !== DEFAULTS.daily_entries };
+};
+
 /** The menu with the saved labels and links, keeping each dropdown row's icon and description from the design. */
 export const getNavItems = async (): Promise<NavItem[]> => {
   const saved = await getHeaderItems();
@@ -81,6 +100,8 @@ export const getEditorContent = async () => ({
   header: await getHeaderItems(),
   home_hero: await getHomeHeroContent(),
   faqs: await getFaqItems(),
+  daily_today: await getDailyToday(),
+  daily_entries: (await getDailyEntries()).entries,
 });
 
 /** Validates and saves one section. Admin only (callers check getAdminUser first). */

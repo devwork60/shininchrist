@@ -15,7 +15,13 @@ const formatToday = () =>
     timeZone: "UTC",
   });
 
-const FormationHeader = () => (
+const FormationHeader = ({
+  verse,
+  reference,
+}: {
+  verse: string;
+  reference: string;
+}) => (
   <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
     <div className="max-w-2xl">
       <SubHeading as="h2" className="!font-bold !text-primary-green">
@@ -44,10 +50,10 @@ const FormationHeader = () => (
           {FORMATION_HEADER.verseLabel}
         </p>
         <QuoteText className="mt-2 !not-italic lg:!text-xl">
-          “{FORMATION_HEADER.verse}
+          “{verse}”
         </QuoteText>
         <Eyebrow as="span" className="mt-2 block !text-white-color">
-          {FORMATION_HEADER.verseReference}
+          {reference}
         </Eyebrow>
       </aside>
     </div>

@@ -14,6 +14,7 @@ const robots = (): MetadataRoute.Robots => ({
       "/payment/",
       "/daily/this-week",
       "/daily/archive",
+      "/daily/entry",
     ],
   },
   sitemap: `${siteUrl()}/sitemap.xml`,

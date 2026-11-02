@@ -1,13 +1,9 @@
 import ResourceIcons from "@/components/icons/ResourceIcons";
 import UiIcons from "@/components/icons/UiIcons";
-import type { FormationStepData } from "@/constant/dailyData";
+import type { DailyIcon } from "@/lib/site-content-schema";
 
 /** Small leading icon for a step button. */
-const StepButtonIcon = ({
-  icon,
-}: {
-  icon: FormationStepData["button"]["icon"];
-}) => {
+const StepButtonIcon = ({ icon }: { icon: DailyIcon }) => {
   switch (icon) {
     case "play":
       return <UiIcons name="playSmall" />;

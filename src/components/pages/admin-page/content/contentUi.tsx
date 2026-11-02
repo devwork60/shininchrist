@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { LinkItem } from "@/lib/site-content-schema";
 
@@ -113,6 +113,89 @@ export const LinkListEditor = ({
       <button type="button" className={`${small} w-fit`} onClick={() => onChange([...rows, { label: "", href: "/" }])}>
         + Add link
       </button>
+    </div>
+  );
+};
+
+/** Photo picker used by the Daily editors: shows the current photo, uploads a new one and hands back its address. */
+export const ImageUpload = ({
+  value,
+  onChange,
+  label = "Photo",
+  optional = false,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+  label?: string;
+  optional?: boolean;
+}) => {
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<{ ok: boolean; text: string } | null>(null);
+  const inputId = useId();
+
+  const upload = async (file: File | undefined) => {
+    if (!file) return;
+    setBusy(true);
+    setNote(null);
+    const body = new FormData();
+    body.append("file", file);
+    const res = await fetch("/api/admin/content/image", { method: "POST", body });
+    const data = await res.json().catch(() => ({}));
+    setBusy(false);
+    if (!res.ok) return setNote({ ok: false, text: data.error ?? "Upload failed." });
+    onChange(data.url);
+    setNote({ ok: true, text: "New photo ready. Press Save to publish it." });
+  };
+
+  const button =
+    "rounded-md border border-primary-green/30 px-3 py-2 text-xs font-semibold text-text-dark hover:bg-cream disabled:opacity-60";
+
+  return (
+    <div className="grid min-w-0 content-start gap-2">
+      <p className="text-xs font-medium text-text-dark">{label}</p>
+      <div className="relative aspect-[3/2] w-full max-w-[220px] overflow-hidden rounded-md border border-primary-green/15 bg-cream">
+        {value ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={value} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <span className="flex h-full items-center justify-center text-xs text-text-grey">
+            No photo
+          </span>
+        )}
+      </div>
+      <input
+        id={inputId}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        disabled={busy}
+        onChange={(e) => {
+          upload(e.target.files?.[0]);
+          e.target.value = "";
+        }}
+        className="sr-only"
+      />
+      <div className="flex flex-wrap gap-2">
+        <label
+          htmlFor={inputId}
+          className={`${button} cursor-pointer ${busy ? "pointer-events-none opacity-60" : ""}`}
+        >
+          {busy ? "Uploading…" : value ? "Change photo" : "Add photo"}
+        </label>
+        {optional && value && (
+          <button type="button" className={button} onClick={() => onChange("")}>
+            Remove photo
+          </button>
+        )}
+      </div>
+      <p className="text-xs text-text-grey">JPG, PNG or WebP, up to 4 MB.</p>
+      {note && (
+        <p
+          role={note.ok ? "status" : "alert"}
+          className={`text-xs ${note.ok ? "text-primary-green" : "text-red-800"}`}
+        >
+          {note.text}
+        </p>
+      )}
     </div>
   );
 };

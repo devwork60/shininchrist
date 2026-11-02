@@ -64,6 +64,14 @@ const HUBS = [
     badge: "Content",
   },
   {
+    title: "Daily Content",
+    description:
+      "Change the Daily activities and their order, the watch and listen buttons, and add dated devotionals, reflections and assignments.",
+    href: "/admin/daily",
+    icon: "book" as const,
+    badge: "Content",
+  },
+  {
     title: "Digital Library Resources",
     description:
       "Upload and manage educational, biblical, and cultural publications, study PDFs, and track user downloads.",

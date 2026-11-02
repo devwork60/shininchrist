@@ -17,6 +17,8 @@ import {
   HERO_TITLE,
 } from "@/constant/homeData";
 import { FAQ_ITEMS } from "@/constant/faqData";
+import { ARCHIVE_ENTRIES } from "@/constant/dailyArchiveData";
+import { FORMATION_STEPS, TODAY_PAGE } from "@/constant/dailyData";
 import { JoinInputError } from "@/lib/join";
 
 /**
@@ -30,6 +32,8 @@ export const CONTENT_KEYS = [
   "header",
   "home_hero",
   "faqs",
+  "daily_today",
+  "daily_entries",
 ] as const;
 export type ContentKey = (typeof CONTENT_KEYS)[number];
 
@@ -80,6 +84,65 @@ export interface FaqItemContent {
   keyPoints?: string[];
 }
 
+export type DailyIcon = "play" | "book" | "doc" | "headphones" | "arrow";
+
+/** One of the Daily activities (Worship, The Word, ...). The order of the list is the order shown. */
+export interface DailyStep {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  imageAlt: string;
+  /** Devotional or reflection text. A blank line starts a new paragraph. */
+  body: string;
+  quote: string;
+  quoteReference: string;
+  motto: string;
+  /** Optional video address (YouTube plays on the page; other sites open as a link). */
+  videoUrl: string;
+  buttonText: string;
+  buttonUrl: string;
+  icon: DailyIcon;
+}
+
+export const VIEW_OPTION_IDS = ["youtube", "facebook", "instagram", "tiktok", "audio"] as const;
+export type ViewOptionId = (typeof VIEW_OPTION_IDS)[number];
+
+/** The "watch / listen" buttons in the right-hand column of the Today page. */
+export interface DailyViewOption {
+  id: ViewOptionId;
+  label: string;
+  url: string;
+  enabled: boolean;
+}
+
+export interface DailyTodayContent {
+  title: string;
+  verse: string;
+  verseReference: string;
+  steps: DailyStep[];
+  viewOptions: DailyViewOption[];
+}
+
+/** One dated Daily entry. It appears under This Week or the Archive depending on its date. */
+export interface DailyEntry {
+  id: string;
+  /** yyyy-mm-dd. A future date keeps the entry hidden until that day. */
+  date: string;
+  title: string;
+  scripture: string;
+  book: string;
+  topic: string;
+  summary: string;
+  reflection: string;
+  assignment: string;
+  image: string;
+  imageAlt: string;
+  videoUrl: string;
+  linkText: string;
+  linkUrl: string;
+}
+
 const simpleLink = ({ label, href }: FooterLink): FooterLink => ({ label, href });
 
 export const DEFAULTS: {
@@ -88,6 +151,8 @@ export const DEFAULTS: {
   header: HeaderItem[];
   home_hero: HomeHeroContent;
   faqs: FaqItemContent[];
+  daily_today: DailyTodayContent;
+  daily_entries: DailyEntry[];
 } = {
   invite_mercy: {
     title: [...INVITE_HERO.title],
@@ -130,6 +195,51 @@ export const DEFAULTS: {
     question: item.question,
     answer: item.answer,
   })),
+  daily_today: {
+    title: TODAY_PAGE.title,
+    verse: TODAY_PAGE.verse,
+    verseReference: TODAY_PAGE.verseReference,
+    steps: FORMATION_STEPS.map((step) => ({
+      id: step.id,
+      title: step.title,
+      subtitle: step.subtitle,
+      image: step.image,
+      imageAlt: step.imageAlt,
+      body: step.body,
+      quote: step.quote ?? "",
+      quoteReference: step.quoteReference ?? "",
+      motto: step.motto ?? "",
+      videoUrl: "",
+      buttonText: step.button.text,
+      buttonUrl: step.button.url,
+      icon: step.button.icon,
+    })),
+    viewOptions: [
+      { id: "youtube", label: "Watch on YouTube", url: "https://youtube.com/@shininchrist", enabled: true },
+      { id: "facebook", label: "Watch on Facebook", url: "https://www.facebook.com/share/1GZbPA9QNH/", enabled: true },
+      { id: "instagram", label: "Watch on Instagram", url: CONTACT.instagramUrl, enabled: true },
+      // Hidden until the TikTok account is confirmed as the official one.
+      { id: "tiktok", label: "Watch on TikTok", url: CONTACT.tiktokUrl, enabled: false },
+      // Hidden until an audio address is added.
+      { id: "audio", label: "Listen to Audio Only", url: "", enabled: false },
+    ],
+  },
+  daily_entries: ARCHIVE_ENTRIES.map((entry) => ({
+    id: entry.id,
+    date: entry.date,
+    title: entry.title,
+    scripture: entry.scripture,
+    book: entry.book,
+    topic: entry.topic,
+    summary: "",
+    reflection: "",
+    assignment: "",
+    image: entry.image,
+    imageAlt: entry.imageAlt,
+    videoUrl: "",
+    linkText: "",
+    linkUrl: "",
+  })),
 };
 
 // ----------------------------------------------------------------- checks
@@ -148,7 +258,7 @@ const text = (value: unknown, label: string, max: number, required = true) => {
 /** Internal paths, http(s) links, mailto: and tel: only. Rejects javascript: and other schemes. */
 const link = (value: unknown, label: string) => {
   const href = text(value, `${label} link`, 300);
-  if (href === "#") return href;
+  if (href === "#" || /^#[A-Za-z0-9_-]+$/.test(href)) return href;
   if (href.startsWith("/") && !href.startsWith("//") && !/[\\\s]/.test(href))
     return href;
   if (/^(mailto:|tel:)[^\s]+$/i.test(href)) return href;
@@ -188,6 +298,33 @@ const image = (value: unknown) => {
   if (!ownStorage && !localFile) fail("Please upload the photo again.");
   return src;
 };
+
+/** Like image(), but an empty value is allowed (the page shows a plain block instead). */
+const optionalImage = (value: unknown) =>
+  String(value ?? "").trim() ? image(value) : "";
+
+/** A full web address (https://...) or nothing. Used for videos and external links. */
+const webUrl = (value: unknown, label: string) => {
+  const raw = String(value ?? "").trim();
+  if (!raw) return "";
+  if (raw.length > 400 || !/^https?:\/\/[^\s]+$/i.test(raw))
+    return fail(label + ": use a full web address starting with https://");
+  try {
+    new URL(raw);
+  } catch {
+    return fail(label + ": that web address is not valid.");
+  }
+  return raw;
+};
+
+const slug = (value: unknown, fallback: string) =>
+  String(value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60) || fallback;
+
+const DAILY_ICONS: DailyIcon[] = ["play", "book", "doc", "headphones", "arrow"];
 
 export const sanitize = (key: ContentKey, input: unknown) => {
   const v = (input ?? {}) as Record<string, unknown>;
@@ -246,6 +383,85 @@ export const sanitize = (key: ContentKey, input: unknown) => {
         answer: text(row.answer, "Answer", 3000),
       };
     }) satisfies FaqItemContent[];
+  }
+  if (key === "daily_today") {
+    const steps = Array.isArray(v.steps) ? v.steps : fail("The activities must be a list.");
+    if (steps.length < 1 || steps.length > 12)
+      fail("Daily needs between 1 and 12 activities.");
+    const seen = new Set<string>();
+    const cleanSteps = steps.map((item: unknown, idx: number) => {
+      const row = (item ?? {}) as Record<string, unknown>;
+      const n = idx + 1;
+      let id = slug(row.id, "step-" + n);
+      while (seen.has(id)) id = id + "-" + n;
+      seen.add(id);
+      const icon = String(row.icon ?? "arrow") as DailyIcon;
+      return {
+        id,
+        title: text(row.title, "Activity " + n + " title", 60),
+        subtitle: text(row.subtitle, "Activity " + n + " subtitle", 120, false),
+        image: image(row.image),
+        imageAlt: text(row.imageAlt, "Activity " + n + " photo description", 160, false),
+        body: text(row.body, "Activity " + n + " text", 6000, false),
+        quote: text(row.quote, "Activity " + n + " quote", 600, false),
+        quoteReference: text(row.quoteReference, "Activity " + n + " quote reference", 120, false),
+        motto: text(row.motto, "Activity " + n + " motto", 240, false),
+        videoUrl: webUrl(row.videoUrl, "Activity " + n + " video"),
+        buttonText: text(row.buttonText, "Activity " + n + " button label", 40),
+        buttonUrl: row.buttonUrl ? link(row.buttonUrl, "Activity " + n + " button") : "#",
+        icon: DAILY_ICONS.includes(icon) ? icon : "arrow",
+      };
+    });
+    const options = Array.isArray(v.viewOptions) ? v.viewOptions : [];
+    return {
+      title: text(v.title, "Page title", 80),
+      verse: text(v.verse, "Verse", 400),
+      verseReference: text(v.verseReference, "Verse reference", 80, false),
+      steps: cleanSteps,
+      viewOptions: DEFAULTS.daily_today.viewOptions.map((base) => {
+        const row = (options.find((o: { id?: string }) => o?.id === base.id) ?? base) as Record<string, unknown>;
+        const enabled = row.enabled === true;
+        const url = webUrl(row.url, base.id + " address");
+        if (enabled && !url) fail("Add an address for " + base.id + ", or switch it off.");
+        return {
+          id: base.id,
+          label: text(row.label, base.id + " button label", 40),
+          url,
+          enabled,
+        };
+      }),
+    } satisfies DailyTodayContent;
+  }
+  if (key === "daily_entries") {
+    const items = Array.isArray(v.items) ? v.items : Array.isArray(v) ? (v as unknown[]) : fail("The entries must be a list.");
+    if (items.length > 400) fail("Daily can have at most 400 entries.");
+    const seen = new Set<string>();
+    return items.map((item: unknown, idx: number) => {
+      const row = (item ?? {}) as Record<string, unknown>;
+      const n = idx + 1;
+      let id = slug(row.id, "entry-" + n);
+      while (seen.has(id)) id = id + "-" + n;
+      seen.add(id);
+      const date = text(row.date, "Entry " + n + " date", 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(date + "T00:00:00Z")))
+        fail("Entry " + n + ": the date must look like 2026-11-05.");
+      return {
+        id,
+        date,
+        title: text(row.title, "Entry " + n + " title", 120),
+        scripture: text(row.scripture, "Entry " + n + " scripture", 120, false),
+        book: text(row.book, "Entry " + n + " Bible book", 60, false),
+        topic: text(row.topic, "Entry " + n + " topic", 60, false),
+        summary: text(row.summary, "Entry " + n + " devotional", 8000, false),
+        reflection: text(row.reflection, "Entry " + n + " reflection", 4000, false),
+        assignment: text(row.assignment, "Entry " + n + " assignment", 4000, false),
+        image: optionalImage(row.image),
+        imageAlt: text(row.imageAlt, "Entry " + n + " photo description", 160, false),
+        videoUrl: webUrl(row.videoUrl, "Entry " + n + " video"),
+        linkText: text(row.linkText, "Entry " + n + " link label", 60, false),
+        linkUrl: webUrl(row.linkUrl, "Entry " + n + " link"),
+      };
+    }) satisfies DailyEntry[];
   }
   const items = Array.isArray(v.items) ? v.items : fail("The menu is invalid.");
   if (items.length < 1 || items.length > 12) fail("The menu needs between 1 and 12 items.");

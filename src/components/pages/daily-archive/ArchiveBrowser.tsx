@@ -4,14 +4,16 @@ import { useMemo, useState } from "react";
 import SearchIcon from "@/components/icons/UiIconsSearch";
 import CardDescSm from "@/components/pages/typography/CardDescSm";
 import {
-  ARCHIVE_ENTRIES,
   ARCHIVE_PAGE,
   type ArchiveEntryData,
 } from "@/constant/dailyArchiveData";
 import ArchiveEntryRow from "./ArchiveEntryRow";
 import ArchiveFilterSelect from "./ArchiveFilterSelect";
 
-const monthKey = (entry: ArchiveEntryData) => entry.date.slice(0, 7);
+/** An archive row: the sample/real entry plus, for real entries, the page it opens. */
+export type ArchiveRow = ArchiveEntryData & { href?: string };
+
+const monthKey = (entry: ArchiveRow) => entry.date.slice(0, 7);
 
 const monthLabel = (key: string) =>
   new Date(`${key}-01T00:00:00Z`).toLocaleDateString("en-US", {
@@ -23,7 +25,7 @@ const monthLabel = (key: string) =>
 const unique = (values: string[]) => Array.from(new Set(values));
 
 /** Search box, three filters and the (locked) entry list. */
-const ArchiveBrowser = () => {
+const ArchiveBrowser = ({ entries }: { entries: ArchiveRow[] }) => {
   const [query, setQuery] = useState("");
   const [month, setMonth] = useState("");
   const [topic, setTopic] = useState("");
@@ -31,7 +33,7 @@ const ArchiveBrowser = () => {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return ARCHIVE_ENTRIES.filter(
+    return entries.filter(
       (entry) =>
         (!month || monthKey(entry) === month) &&
         (!topic || entry.topic === topic) &&
@@ -42,7 +44,7 @@ const ArchiveBrowser = () => {
             .toLowerCase()
             .includes(q)),
     );
-  }, [query, month, topic, book]);
+  }, [entries, query, month, topic, book]);
 
   return (
     <div>
@@ -64,7 +66,7 @@ const ArchiveBrowser = () => {
           allLabel="All Months"
           value={month}
           onChange={setMonth}
-          options={unique(ARCHIVE_ENTRIES.map(monthKey)).map((key) => ({
+          options={unique(entries.map(monthKey)).map((key) => ({
             value: key,
             label: monthLabel(key),
           }))}
@@ -74,7 +76,7 @@ const ArchiveBrowser = () => {
           allLabel="All Topics"
           value={topic}
           onChange={setTopic}
-          options={unique(ARCHIVE_ENTRIES.map((e) => e.topic)).map((t) => ({
+          options={unique(entries.map((e) => e.topic).filter(Boolean)).map((t) => ({
             value: t,
             label: t,
           }))}
@@ -84,7 +86,7 @@ const ArchiveBrowser = () => {
           allLabel="All Scripture"
           value={book}
           onChange={setBook}
-          options={unique(ARCHIVE_ENTRIES.map((e) => e.book)).map((b) => ({
+          options={unique(entries.map((e) => e.book).filter(Boolean)).map((b) => ({
             value: b,
             label: b,
           }))}
@@ -93,7 +95,7 @@ const ArchiveBrowser = () => {
 
       {results.length > 0 ? (
         <ul className="mt-5">
-          {results.map(({ id, title, scripture, date, image, imageAlt }) => (
+          {results.map(({ id, title, scripture, date, image, imageAlt, href }) => (
             <ArchiveEntryRow
               key={id}
               title={title}
@@ -101,6 +103,7 @@ const ArchiveBrowser = () => {
               date={date}
               image={image}
               imageAlt={imageAlt}
+              href={href}
             />
           ))}
         </ul>

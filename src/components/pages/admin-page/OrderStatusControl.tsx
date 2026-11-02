@@ -28,7 +28,7 @@ const OrderStatusControl = ({
       <span className="text-xs text-text-grey">
         {status === "cancelled"
           ? "Cancelled"
-          : "Waiting for payment, cannot be processed yet"}
+          : "Waiting for payment; it cannot be processed yet"}
       </span>
     );
   }

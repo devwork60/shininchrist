@@ -59,7 +59,7 @@ export default function MediaPressPage() {
             <div className="relative mx-auto aspect-square w-48 overflow-hidden rounded-2xl md:col-span-4 md:w-full">
               <Image
                 src="/images/about/founder-portrait.webp"
-                alt="Evangelist Georgia 'Mercy' Nnabuihe"
+                alt="Evangelist Georgia “Mercy” Morris"
                 fill
                 sizes="(min-width: 768px) 30vw, 192px"
                 className="object-cover"
@@ -70,7 +70,7 @@ export default function MediaPressPage() {
                 Founder & Lead Evangelist
               </span>
               <h3 className="mt-1 text-xl font-bold text-black-color md:text-2xl">
-                Georgia “Mercy” Nnabuihe
+                Georgia “Mercy” Morris
               </h3>
               <p className="mt-2 text-xs leading-relaxed text-stone-600 md:text-sm">
                 Evangelist Mercy is an author, educator, ordained servant of God, and founder of ShininChrist.

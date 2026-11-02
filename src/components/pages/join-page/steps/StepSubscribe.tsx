@@ -22,7 +22,7 @@ const StepSubscribe = ({
     onNext={() => {
       if (!platform)
         throw new Error(
-          "Please choose the platform you subscribed or followed on.",
+          "Please choose the platform you subscribed to or followed us on.",
         );
       onNext();
     }}

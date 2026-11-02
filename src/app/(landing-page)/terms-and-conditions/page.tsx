@@ -58,7 +58,7 @@ export default function TermsAndConditionsPage() {
             <h3 className="text-lg font-bold text-black-color">3. Intellectual Property & Library Materials</h3>
             <p className="text-sm leading-relaxed text-stone-700">
               All audio devotionals, teachings, books, Academy curriculum, logos, trademarks, and media provided on ShininChrist
-              are the proprietary intellectual property of ShininChrist and Evangelist Georgia “Mercy” Nnabuihe.
+              are the proprietary intellectual property of ShininChrist and Evangelist Georgia “Mercy” Morris.
               Materials downloaded from the member Library are licensed for personal, non-commercial spiritual formation and must not be
               redistributed, sold, or modified without prior written authorization.
             </p>

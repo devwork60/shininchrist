@@ -53,7 +53,7 @@ export const JOIN_GLANCE: JoinGlanceStep[] = [
   },
   {
     title: "Subscribe to Social Community",
-    text: "Complete at least one: subscribe to the official ShininChrist YouTube channel, or follow the official Facebook, Instagram or TikTok page.",
+    text: "Complete at least one: subscribe to the official ShininChrist YouTube channel, or follow the official Facebook page.",
     note: "One platform is required.",
   },
   {

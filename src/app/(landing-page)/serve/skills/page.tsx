@@ -7,14 +7,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/serve/skills" },
   title: "Share Your Skills | ShininChrist",
   description:
-    "Offer your professional or creative skills to advance ShininChrist's spiritual, educational, digital and community work.",
+    "Offer your professional or creative skills to advance ShininChrist’s spiritual, educational, digital and community work.",
 };
 
 const SkillsPage = () => (
   <FormPageShell
     eyebrow="Serve"
     heroTitle="Share Your Skills"
-    heroText="Use your professional knowledge, technical abilities, creativity and experience to advance ShininChrist's mission."
+    heroText="Use your professional knowledge, technical abilities, creativity and experience to advance ShininChrist’s mission."
     breadcrumb={[
       { label: "Home", href: "/" },
       { label: "Serve", href: "/serve" },

@@ -255,7 +255,7 @@ export const INVITE_FORM = {
   intro:
     "Please complete the form below to submit an invitation for Mercy to speak. Submission of an invitation does not constitute confirmation or acceptance of an engagement.",
   fileHint:
-    "You may upload an official invitation letter or other relevant document (PDF, DOC, or JPG – max 10MB).",
+    "You may upload an official invitation letter or other relevant document (PDF, DOC, or JPG – max 10 MB).",
   submit: "Submit Invitation",
   note: "Thank you for inviting Mercy to speak. The ShininChrist team will review your invitation and contact you regarding availability and next steps. Submission of an invitation does not constitute confirmation of an engagement.",
   success:

@@ -12,7 +12,7 @@ export const WOMEN_HERO = {
   videoCta: { text: "Watch Video", url: "#chapter-video" },
   image: "/images/chapters/women-hero.jpg",
   imageAlt:
-    "A smiling woman filled with joy looking towards a warm golden sunset",
+    "A smiling woman filled with joy looking toward a warm golden sunset",
 };
 
 export const WOMEN_FOCUS: FocusSectionData = {

@@ -20,7 +20,7 @@ export const FEATURED_RESOURCES: FeaturedResourceData[] = [
     id: "book",
     tag: "New Book",
     title: "ShininWisdom: Making Wise Decisions",
-    description: "A practical guide to help you make Godly decisions daily.",
+    description: "A practical guide to help you make godly decisions daily.",
     image: "/images/library/featured-book.webp",
     imageAlt: "A book titled Making Wise Decisions",
     linkText: "View",

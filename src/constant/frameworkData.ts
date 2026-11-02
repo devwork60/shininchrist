@@ -39,7 +39,7 @@ export const FRAMEWORK_CARDS: FrameworkCardData[] = [
     description:
       "We serve others with compassion, build strong relationships, and bring hope.",
     image: "/images/framework/community-card.webp",
-    imageAlt: "A neighbourhood community at sunset",
+    imageAlt: "A neighborhood community at sunset",
   },
   {
     id: "nation",

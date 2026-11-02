@@ -122,7 +122,7 @@ export const FOUNDER_PILLARS: FounderPillar[] = [
     id: "mission",
     icon: "globe",
     title: "From Jamaica to a Global Mission",
-    text: "Born in Jamaica, Mercy’s journey has extended beyond the country of her birth and into international Christian ministry and missions. Her experiences across different countries, cultures, education systems, and communities helped shape her conviction that Christian ministry can address the whole person - spiritually, educationally, culturally, and practically. That conviction became part of the foundation for ShininChrist.",
+    text: "Born in Jamaica, Mercy’s journey has extended beyond the country of her birth and into international Christian ministry and missions. Her experiences across different countries, cultures, education systems, and communities helped shape her conviction that Christian ministry can address the whole person — spiritually, educationally, culturally, and practically. That conviction became part of the foundation for ShininChrist.",
   },
   {
     id: "why",

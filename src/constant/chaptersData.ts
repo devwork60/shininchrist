@@ -78,7 +78,7 @@ export const EXPERIENCE_ITEMS: ExperienceItemData[] = [
     id: "sisterhood",
     icon: "target",
     title: "Sisterhood & Brotherhood",
-    description: "Meet new people and build lasting Godly relationships.",
+    description: "Meet new people and build lasting godly relationships.",
     image: "/images/chapters/sisterhood.webp",
     imageAlt: "Three friends smiling together in ShininChrist shirts",
   },

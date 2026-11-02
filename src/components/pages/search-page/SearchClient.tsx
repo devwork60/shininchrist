@@ -51,7 +51,7 @@ const SEARCH_DATABASE: SearchEntry[] = [
   {
     title: "Daily — This Week",
     category: "Daily",
-    description: "Review current week devotional movements and audio recordings for active members.",
+    description: "Review this week’s devotional entries and audio recordings for active members.",
     href: "/daily/this-week",
     badge: "Members Only",
   },
@@ -77,7 +77,7 @@ const SEARCH_DATABASE: SearchEntry[] = [
     href: "/academy/courses",
   },
   {
-    title: "Examination Assessments Preparation",
+    title: "Examination Preparation",
     category: "Academy",
     description: "Educational preparation and resources for WAEC, NECO, UTME/JAMB, GCE, CXC/CSEC, and CAPE exams.",
     href: "/academy/assessments",
@@ -184,7 +184,7 @@ const SEARCH_DATABASE: SearchEntry[] = [
   {
     title: "Meet the Founder (Evangelist Mercy)",
     category: "About",
-    description: "Learn about Evangelist Georgia “Mercy” Nnabuihe, her calling, vision, and ministry journey.",
+    description: "Learn about Evangelist Georgia “Mercy” Morris, her calling, vision, and ministry journey.",
     href: "/about/founder",
   },
   {

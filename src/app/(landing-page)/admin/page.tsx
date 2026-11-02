@@ -74,7 +74,7 @@ const HUBS = [
   {
     title: "Designated Bank Accounts",
     description:
-      "Maintain active bank coordinates displayed to members for manual donations and uniform wire transfers.",
+      "Maintain the active bank details shown to members for manual donations and uniform bank transfers.",
     href: "/admin/bank-accounts",
     icon: "home" as const,
     badge: "Banking",

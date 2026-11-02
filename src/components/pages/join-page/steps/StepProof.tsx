@@ -33,7 +33,7 @@ const StepProof = ({
   return (
     <StepFrame
       title="Upload Screenshot Proof"
-      description="Upload a screenshot showing your subscription or follow (YouTube, Facebook, Instagram or TikTok). The status must show “Subscribed” or “Following”."
+      description="Upload a screenshot showing your subscription or follow (YouTube or Facebook). The status must show “Subscribed” or “Following”."
       onNext={save}
       onBack={onBack}
       locked="Proof must be received by our team."

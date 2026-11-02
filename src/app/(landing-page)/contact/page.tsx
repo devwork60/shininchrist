@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
   title: "Contact Us | ShininChrist",
   description:
-    "Get in touch with ShininChrist global ministry team for general inquiries, membership questions, chapters, Academy, prayer, or giving.",
+    "Get in touch with the ShininChrist global ministry team for general inquiries, membership questions, chapters, Academy, prayer, or giving.",
 };
 
 export default function ContactPage() {

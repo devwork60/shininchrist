@@ -63,7 +63,7 @@ const OPTIONS: { value: Method; label: string; hint: string }[] = [
   {
     value: "card",
     label: "Pay with card (Paystack)",
-    hint: "Pay securely on Paystack's page. Confirmed automatically.",
+    hint: "Pay securely on Paystack’s page. Confirmed automatically.",
   },
 ];
 

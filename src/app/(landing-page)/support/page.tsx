@@ -112,7 +112,7 @@ export default function SupportPage() {
           <div className="mt-12 rounded-3xl border border-stone-200 bg-stone-50 p-8 md:p-10">
             <div className="text-center">
               <h3 className="text-xl font-bold text-black-color md:text-2xl">
-                Still Experiencing An Issue?
+                Still Experiencing an Issue?
               </h3>
               <p className="mx-auto mt-2 max-w-xl text-xs leading-relaxed text-stone-600 md:text-sm">
                 Our support team is ready to investigate. You can report a bug directly,

@@ -19,6 +19,8 @@ import {
 import { FAQ_ITEMS } from "@/constant/faqData";
 import { ARCHIVE_ENTRIES } from "@/constant/dailyArchiveData";
 import { FORMATION_STEPS, TODAY_PAGE } from "@/constant/dailyData";
+import { FIELDS } from "@/constant/academyData";
+import { COURSE_SUBJECTS } from "@/constant/coursesData";
 import { JoinInputError } from "@/lib/join";
 
 /**
@@ -34,8 +36,45 @@ export const CONTENT_KEYS = [
   "faqs",
   "daily_today",
   "daily_entries",
+  "academy_courses",
 ] as const;
 export type ContentKey = (typeof CONTENT_KEYS)[number];
+
+export type CourseStatus = "published" | "coming_soon" | "draft";
+export interface CourseLesson {
+  id: string;
+  title: string;
+  summary: string;
+  content: string;
+  videoUrl: string;
+}
+export interface CourseResource {
+  id: string;
+  title: string;
+  url: string;
+  note: string;
+}
+export interface CourseAssignment {
+  id: string;
+  title: string;
+  instructions: string;
+  dueNote: string;
+}
+export interface AcademyCourse {
+  id: string;
+  title: string;
+  field: string;
+  summary: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  level: string;
+  duration: string;
+  status: CourseStatus;
+  lessons: CourseLesson[];
+  resources: CourseResource[];
+  assignments: CourseAssignment[];
+}
 
 export interface LinkItem {
   label: string;
@@ -153,6 +192,7 @@ export const DEFAULTS: {
   faqs: FaqItemContent[];
   daily_today: DailyTodayContent;
   daily_entries: DailyEntry[];
+  academy_courses: AcademyCourse[];
 } = {
   invite_mercy: {
     title: [...INVITE_HERO.title],
@@ -239,6 +279,22 @@ export const DEFAULTS: {
     videoUrl: "",
     linkText: "",
     linkUrl: "",
+  })),
+  // The subjects from the Academy guide, listed as "Coming soon" until an admin builds them into courses.
+  academy_courses: COURSE_SUBJECTS.map((subject) => ({
+    id: subject.id,
+    title: subject.title,
+    field: subject.field,
+    summary: "",
+    description: "",
+    image: "",
+    imageAlt: "",
+    level: "",
+    duration: "",
+    status: "coming_soon" as const,
+    lessons: [],
+    resources: [],
+    assignments: [],
   })),
 };
 
@@ -462,6 +518,66 @@ export const sanitize = (key: ContentKey, input: unknown) => {
         linkUrl: webUrl(row.linkUrl, "Entry " + n + " link"),
       };
     }) satisfies DailyEntry[];
+  }
+  if (key === "academy_courses") {
+    const items = Array.isArray(v.items) ? v.items : Array.isArray(v) ? (v as unknown[]) : fail("The courses must be a list.");
+    if (items.length > 150) fail("The Academy can have at most 150 courses.");
+    const fieldIds = FIELDS.map((f) => f.id);
+    const unique = (seen: Set<string>, raw: unknown, base: string, n: number) => {
+      let id = slug(raw, base + "-" + n);
+      while (seen.has(id)) id = id + "-" + n;
+      seen.add(id);
+      return id;
+    };
+    const list = (value: unknown, label: string, max: number) => {
+      const rows = Array.isArray(value) ? value : [];
+      if (rows.length > max) fail(label + ": at most " + max + " allowed.");
+      return rows as Record<string, unknown>[];
+    };
+    const seenCourses = new Set<string>();
+    return items.map((item: unknown, idx: number) => {
+      const row = (item ?? {}) as Record<string, unknown>;
+      const n = idx + 1;
+      const name = "Course " + n;
+      const field = String(row.field ?? "");
+      if (!fieldIds.includes(field)) fail(name + ": choose a field of learning.");
+      const status = String(row.status ?? "draft");
+      if (!["published", "coming_soon", "draft"].includes(status)) fail(name + ": the status is not valid.");
+      const seenLessons = new Set<string>();
+      const seenResources = new Set<string>();
+      const seenAssignments = new Set<string>();
+      return {
+        id: unique(seenCourses, row.id, "course", n),
+        title: text(row.title, name + " title", 100),
+        field,
+        summary: text(row.summary, name + " short description", 300, false),
+        description: text(row.description, name + " description", 8000, false),
+        image: optionalImage(row.image),
+        imageAlt: text(row.imageAlt, name + " photo description", 160, false),
+        level: text(row.level, name + " level", 60, false),
+        duration: text(row.duration, name + " duration", 60, false),
+        status: status as CourseStatus,
+        lessons: list(row.lessons, name + " lessons", 100).map((l, i) => ({
+          id: unique(seenLessons, l.id, "lesson", i + 1),
+          title: text(l.title, name + " lesson " + (i + 1) + " title", 120),
+          summary: text(l.summary, name + " lesson " + (i + 1) + " summary", 300, false),
+          content: text(l.content, name + " lesson " + (i + 1) + " content", 20000, false),
+          videoUrl: webUrl(l.videoUrl, name + " lesson " + (i + 1) + " video"),
+        })),
+        resources: list(row.resources, name + " resources", 100).map((r, i) => ({
+          id: unique(seenResources, r.id, "resource", i + 1),
+          title: text(r.title, name + " resource " + (i + 1) + " title", 120),
+          url: webUrl(r.url, name + " resource " + (i + 1) + " link") || fail(name + " resource " + (i + 1) + ": add a web address."),
+          note: text(r.note, name + " resource " + (i + 1) + " note", 300, false),
+        })),
+        assignments: list(row.assignments, name + " assignments", 100).map((a, i) => ({
+          id: unique(seenAssignments, a.id, "assignment", i + 1),
+          title: text(a.title, name + " assignment " + (i + 1) + " title", 120),
+          instructions: text(a.instructions, name + " assignment " + (i + 1) + " instructions", 8000, false),
+          dueNote: text(a.dueNote, name + " assignment " + (i + 1) + " due note", 120, false),
+        })),
+      };
+    }) satisfies AcademyCourse[];
   }
   const items = Array.isArray(v.items) ? v.items : fail("The menu is invalid.");
   if (items.length < 1 || items.length > 12) fail("The menu needs between 1 and 12 items.");

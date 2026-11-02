@@ -9,4 +9,5 @@ export const SUBMISSION_LABELS: Record<string, string> = {
   give_property: "Property / Major Asset Inquiry",
   contact: "Contact Inquiry",
   other: "Bug Report / Feedback",
+  assignment: "Academy Assignment",
 };

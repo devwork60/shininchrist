@@ -14,6 +14,11 @@ export async function POST(req: Request) {
       );
     }
 
+    // Assignments have their own route, which checks membership and the course.
+    if (type === "assignment") {
+      return NextResponse.json({ error: "Not allowed." }, { status: 400 });
+    }
+
     const user = await getCurrentUser().catch(() => null);
 
     const submission = await saveFormSubmission({

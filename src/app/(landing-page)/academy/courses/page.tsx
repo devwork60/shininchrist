@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import SimpleHero from "@/components/common-components/SimpleHero";
+import CourseCatalogue from "@/components/pages/courses-page/CourseCatalogue";
 import CourseResults from "@/components/pages/courses-page/CourseResults";
 import { COURSES_HERO, COURSES_QUOTE } from "@/constant/coursesData";
 
@@ -24,6 +25,7 @@ const CoursesPage = async ({
       <SimpleHero {...COURSES_HERO} />
       {query && <CourseResults query={query} />}
       <BrowseSection defaultQuery={query} />
+      <CourseCatalogue />
       <QuoteBand {...COURSES_QUOTE} />
     </main>
   );

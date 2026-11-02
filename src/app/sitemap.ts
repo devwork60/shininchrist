@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { STORE_PRODUCTS } from "@/constant/storeData";
+import { getAcademyCourses } from "@/lib/site-content";
 import { siteUrl } from "@/lib/site-origin";
 
 /**
@@ -38,8 +39,9 @@ const PAGES: { path: string; priority: number; changeFrequency: "daily" | "weekl
   { path: "/store", priority: 0.7, changeFrequency: "weekly" },
 ];
 
-const sitemap = (): MetadataRoute.Sitemap => {
+const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
   const base = siteUrl();
+  const courses = (await getAcademyCourses()).filter((c) => c.status === "published");
   const now = new Date();
   return [
     ...PAGES.map(({ path, priority, changeFrequency }) => ({
@@ -47,6 +49,12 @@ const sitemap = (): MetadataRoute.Sitemap => {
       lastModified: now,
       changeFrequency,
       priority,
+    })),
+    ...courses.map((course) => ({
+      url: `${base}/academy/courses/${course.id}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
     })),
     ...STORE_PRODUCTS.map((product) => ({
       url: `${base}/store/${product.slug}`,

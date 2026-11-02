@@ -72,6 +72,14 @@ const HUBS = [
     badge: "Content",
   },
   {
+    title: "Academy Courses",
+    description:
+      "Create and edit courses, and add or update lessons, learning resources and assignments.",
+    href: "/admin/academy",
+    icon: "book" as const,
+    badge: "Content",
+  },
+  {
     title: "Digital Library Resources",
     description:
       "Upload and manage educational, biblical, and cultural publications, study PDFs, and track user downloads.",

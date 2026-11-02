@@ -1087,6 +1087,7 @@ enum submission_type {
   give_property
   contact
   other
+  assignment
 
   @@schema("public")
 }

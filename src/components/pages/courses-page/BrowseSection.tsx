@@ -21,7 +21,7 @@ const BrowseSection = ({ defaultQuery = "" }: { defaultQuery?: string }) => (
         ))}
       </div>
 
-      <div id="all-courses" className="flex justify-center">
+      <div className="flex justify-center">
         <ButtonSm
           url={COURSES_BROWSE.cta.url}
           text={COURSES_BROWSE.cta.text}

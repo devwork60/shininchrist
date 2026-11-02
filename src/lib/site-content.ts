@@ -6,6 +6,7 @@ import {
   CONTENT_KEYS,
   DEFAULTS,
   sanitize,
+  type AcademyCourse,
   type ContentKey,
   type DailyEntry,
   type DailyTodayContent,
@@ -74,6 +75,10 @@ export const getDailyEntries = async (): Promise<{
   const entries = await read<DailyEntry[]>("daily_entries", DEFAULTS.daily_entries);
   return { entries, saved: Boolean(saved) && entries !== DEFAULTS.daily_entries };
 };
+
+/** The Academy courses with their lessons, resources and assignments (the guide's subjects until an admin saves). */
+export const getAcademyCourses = () =>
+  read<AcademyCourse[]>("academy_courses", DEFAULTS.academy_courses);
 
 /** The menu with the saved labels and links, keeping each dropdown row's icon and description from the design. */
 export const getNavItems = async (): Promise<NavItem[]> => {

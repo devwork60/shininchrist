@@ -16,6 +16,7 @@ export interface SubmitFormInput {
     | "give_in_kind"
     | "give_property"
     | "contact"
+    | "assignment"
     | "other";
   name?: string;
   email?: string;

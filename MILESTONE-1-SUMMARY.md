@@ -1,7 +1,7 @@
 # Milestone 1 — Project Summary
 
 **Project:** ShininChrist Platform Build (Next.js, Vercel, Paystack)
-**Client:** Georgia "Mercy" Nnabuihe (Evangelist Mercy), ShininChrist
+**Client:** Georgia "Mercy" Morris (Evangelist Mercy), ShininChrist
 **Contract:** Upwork fixed-price, $500 total in three milestones. Milestone 1 = **$200**.
 **Due date:** Client set it to **Fri 16 Oct 2026** (Imran first proposed 14 Oct) after her Upwork delay. Contract accepted 5 Oct 2026.
 **Prepared from:** every file in the project folder (see Section 7 for how each one was used). No code has been written.
@@ -641,12 +641,12 @@ Taken from the mockups and guides. Exact values only where a document gives them
 **Action required:** Confirm the written guide is authoritative.
 
 **C8 — Home hero wording**
-**Conflict:** Homepage Text docx: "Shining Christ in our Hearts, Homes, Communities, and Nations" with a longer description. Vision mockup hero: "Advancing spiritual, educational, and cultural literacy through interdisciplinary learning…". Founder bio on Home: "Georgia Melecia Morris at birth" vs Founder page "Georgia 'Mercy' Morris-Nnabuihe".
+**Conflict:** Homepage Text docx: "Shining Christ in our Hearts, Homes, Communities, and Nations" with a longer description. Vision mockup hero: "Advancing spiritual, educational, and cultural literacy through interdisciplinary learning…". Founder bio on Home: "Georgia Melecia Morris at birth" vs Founder page "Georgia 'Mercy' Morris-Morris".
 **Possible interpretation:** Vision mockup is an illustration; Home docx is authoritative.
 **Action required:** Use Homepage Text docx; confirm.
 
 **C9 — Founder naming / titles**
-**Conflict:** Home text calls her "educator, missionary, U.S. Army veteran"; Founder page adds "evangelist, author". Chat sign-off uses "Georgia 'Mercy' Nnabuihe".
+**Conflict:** Home text calls her "educator, missionary, U.S. Army veteran"; Founder page adds "evangelist, author". Chat sign-off uses "Georgia 'Mercy' Morris".
 **Possible interpretation:** Home is intentionally concise.
 **Action required:** None unless the client says otherwise; follow each page's guide.
 

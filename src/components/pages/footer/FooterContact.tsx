@@ -2,6 +2,7 @@ import ButtonSm from "@/components/button/ButtonSm";
 import FooterIcons from "@/components/icons/FooterIcons";
 import FooterHeading from "@/components/pages/typography/FooterHeading";
 import FooterText from "@/components/pages/typography/FooterText";
+import { emailHref, whatsappHref } from "@/constant/contactInfo";
 import { FOOTER_CONTACT } from "@/constant/footerData";
 
 interface FooterContactProps {
@@ -9,7 +10,13 @@ interface FooterContactProps {
   whatsapp: string;
 }
 
-/** The email and WhatsApp number are editable in the admin; the other lines stay as designed. */
+const LINK =
+  "underline-offset-4 transition-colors hover:text-gold-bright hover:underline";
+
+/**
+ * The email and WhatsApp number are editable in the admin; the other lines stay as designed.
+ * The email opens the mail app and the WhatsApp number opens a WhatsApp chat.
+ */
 const FooterContact = ({ email, whatsapp }: FooterContactProps) => (
   <div>
     <FooterHeading>{FOOTER_CONTACT.heading}</FooterHeading>
@@ -21,8 +28,14 @@ const FooterContact = ({ email, whatsapp }: FooterContactProps) => (
           icon === "mail"
             ? [designLines[0], email]
             : icon === "chat"
-              ? [designLines[0], whatsapp, ...designLines.slice(2)]
+              ? [designLines[0], whatsapp]
               : designLines;
+        const hrefFor = (index: number) =>
+          index === 1 && icon === "mail"
+            ? emailHref(email)
+            : index === 1 && icon === "chat"
+              ? whatsappHref(whatsapp)
+              : null;
         return (
           <li key={designLines[0]} className="flex items-start gap-3">
             <FooterIcons
@@ -30,11 +43,26 @@ const FooterContact = ({ email, whatsapp }: FooterContactProps) => (
               className="mt-0.5 shrink-0 text-gold-bright"
             />
             <div>
-              {lines.map((line) => (
-                <FooterText key={line} className="!leading-[1.5]">
-                  {line}
-                </FooterText>
-              ))}
+              {lines.map((line, index) => {
+                const href = hrefFor(index);
+                return (
+                  <FooterText key={line} className="!leading-[1.5] [overflow-wrap:anywhere]">
+                    {href ? (
+                      <a
+                        href={href}
+                        className={LINK}
+                        {...(icon === "chat"
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : {})}
+                      >
+                        {line}
+                      </a>
+                    ) : (
+                      line
+                    )}
+                  </FooterText>
+                );
+              })}
             </div>
           </li>
         );

@@ -1,3 +1,4 @@
+import { CONTACT } from "@/constant/contactInfo";
 import type { SocialIconName } from "@/components/icons/SocialIcons";
 import type { FooterIconName } from "@/components/icons/FooterIcons";
 
@@ -26,6 +27,7 @@ export const FOOTER_EXPLORE: FooterLink[] = [
   { label: "Serve", href: "/serve" },
   { label: "Give", href: "/give" },
   { label: "Invite Mercy to Speak", href: "/about/invite-mercy" },
+  { label: "Mercy Amen", href: CONTACT.mercyAmenUrl },
   { label: "Join ShininChrist", href: "/join" },
 ];
 
@@ -54,18 +56,20 @@ export interface ContactItem {
   lines: string[];
 }
 
-// NOTE: email and phone are placeholders taken from the design mockup.
-// Replace with the official details supplied by ShininChrist.
+// Official details come from ./contactInfo (supplied by the client).
 export const FOOTER_CONTACT = {
   heading: "Contact Us",
   intro: "We’d love to hear from you.",
   items: [
-    { icon: "mail", lines: ["Email", "info@shininchrist.org"] },
+    { icon: "mail", lines: ["Email", CONTACT.email] },
     {
       icon: "chat",
-      lines: ["WhatsApp", "+1 (XXX) XXX-XXXX", "(Official ShininChrist line)"],
+      lines: [CONTACT.whatsappLabel, CONTACT.whatsappNumber],
     },
-    { icon: "pin", lines: ["Global Ministry"] },
+    {
+      icon: "pin",
+      lines: [CONTACT.internationalLabel, CONTACT.internationalNote],
+    },
     { icon: "clock", lines: ["We aim to respond", "within 48 hours."] },
   ] as ContactItem[],
   cta: { text: "Contact Us", url: "/contact" },
@@ -106,15 +110,22 @@ export const SOCIAL_LINKS: SocialLink[] = [
     id: "instagram",
     icon: "instagram",
     label: "Instagram",
-    url: "#",
+    url: CONTACT.instagramUrl,
     enabled: true,
   },
-  { id: "tiktok", icon: "tiktok", label: "TikTok", url: "#", enabled: true },
+  {
+    id: "tiktok",
+    icon: "tiktok",
+    label: "TikTok",
+    url: CONTACT.tiktokUrl,
+    // Hidden until the account is confirmed as the official ShininChrist TikTok. Switch on in Admin > Site content.
+    enabled: false,
+  },
   {
     id: "whatsapp",
     icon: "whatsapp",
     label: "WhatsApp",
-    url: "https://wa.me/?text=Hello%20ShininChrist%20Ministry",
+    url: CONTACT.whatsappUrl,
     enabled: true,
   },
 ];

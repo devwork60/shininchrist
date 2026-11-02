@@ -56,7 +56,7 @@ export default function RefundPolicyPage() {
             </p>
             <p className="text-sm leading-relaxed text-stone-700">
               In the rare event of a technical glitch, duplicate transaction, or unauthorized credit card charge, please notify
-              our financial desk at <span className="font-semibold text-primary-green">info@shininchrist.org</span> immediately.
+              our financial desk at <span className="font-semibold text-primary-green">hello@shininchrist.com</span> immediately.
               Verified erroneous charges will be refunded promptly via the original payment method.
             </p>
           </section>
@@ -73,7 +73,7 @@ export default function RefundPolicyPage() {
           <section className="space-y-3">
             <h3 className="text-lg font-bold text-black-color">4. How to Request Assistance</h3>
             <p className="text-sm leading-relaxed text-stone-700">
-              To request a refund, exchange, or order correction, please email <span className="font-semibold text-primary-green">info@shininchrist.org</span> with your order reference number, full name, and details of the request.
+              To request a refund, exchange, or order correction, please email <span className="font-semibold text-primary-green">hello@shininchrist.com</span> with your order reference number, full name, and details of the request.
             </p>
           </section>
         </div>

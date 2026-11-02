@@ -17,7 +17,7 @@ const Footer = async () => {
   return (
     <footer className="bg-primary-green-deep text-white-color">
       <div className="bg-[radial-gradient(ellipse_at_bottom_left,rgba(29,61,46,0.55),transparent_55%)]">
-        <div className="wrapper-wide grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.7fr_1.05fr_1.2fr_1.25fr_1.55fr_2.4fr] xl:gap-5 xl:py-14">
+        <div className="wrapper-wide grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.3fr_1fr_1.15fr_1.2fr_2.5fr_1.95fr] xl:gap-5 xl:py-14">
           <div className="sm:col-span-2 lg:col-span-3 xl:col-span-1 xl:pr-4">
             <FooterBrand />
           </div>

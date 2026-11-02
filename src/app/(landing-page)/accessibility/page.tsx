@@ -71,7 +71,7 @@ export default function AccessibilityPage() {
             </p>
             <div className="mt-2 rounded-2xl border border-stone-200 bg-stone-50 p-5">
               <p className="text-sm text-stone-700">
-                Email: <span className="font-semibold text-primary-green">info@shininchrist.org</span> (Subject: [ACCESSIBILITY])
+                Email: <span className="font-semibold text-primary-green">hello@shininchrist.com</span> (Subject: [ACCESSIBILITY])
               </p>
               <p className="mt-1 text-xs text-stone-500">
                 Or submit a detailed report via our{" "}

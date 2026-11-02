@@ -58,7 +58,7 @@ export default function MediaPressPage() {
           <div className="mt-8 grid gap-8 rounded-3xl border border-stone-200 bg-stone-50 p-8 md:grid-cols-12 md:items-center md:p-10">
             <div className="relative mx-auto aspect-square w-48 overflow-hidden rounded-2xl md:col-span-4 md:w-full">
               <Image
-                src="/images/about/founder-portrait.webp"
+                src="/images/about/founder-portrait-v2.webp"
                 alt="Evangelist Georgia “Mercy” Morris"
                 fill
                 sizes="(min-width: 768px) 30vw, 192px"
@@ -126,7 +126,7 @@ export default function MediaPressPage() {
               For interviews, statements, event credentials, or media requests, please contact our media team:
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-4 text-sm font-semibold text-gold-bright">
-              <span>Email: info@shininchrist.org</span>
+              <span>Email: hello@shininchrist.com</span>
               <span>•</span>
               <span>Subject: [MEDIA INQUIRY]</span>
             </div>

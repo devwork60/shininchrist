@@ -1,3 +1,4 @@
+import { CONTACT } from "@/constant/contactInfo";
 // DESIGN ONLY: text from the "Join ShininChrist" guide and mockup. No data is saved or sent.
 
 export const JOIN_HERO = {
@@ -137,7 +138,7 @@ export const CONSENT_FORM_URL = "/forms/ShininChrist-Parental-Consent-Form.pdf";
 
 /** Official links are supplied by ShininChrist. Empty = shown as "link coming soon", never a fake link. */
 export const JOIN_LINKS = {
-  whatsapp: "",
+  whatsapp: CONTACT.whatsappUrl,
   contact: "/contact",
 };
 

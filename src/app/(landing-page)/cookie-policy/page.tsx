@@ -86,7 +86,7 @@ export default function CookiePolicyPage() {
             <h3 className="text-lg font-bold text-black-color">4. Inquiries</h3>
             <p className="text-sm leading-relaxed text-stone-700">
               If you have any questions about our use of cookies or privacy practices, reach out to us at{" "}
-              <span className="font-semibold text-primary-green">info@shininchrist.org</span>.
+              <span className="font-semibold text-primary-green">hello@shininchrist.com</span>.
             </p>
           </section>
         </div>

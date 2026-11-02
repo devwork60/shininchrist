@@ -87,7 +87,7 @@ export default function PrivacyPolicyPage() {
             <h3 className="text-lg font-bold text-black-color">5. Your Rights & Contact</h3>
             <p className="text-sm leading-relaxed text-stone-700">
               You may request access to, correction of, or deletion of your personal data at any time by contacting our privacy officer
-              at <span className="font-semibold text-primary-green">info@shininchrist.org</span>.
+              at <span className="font-semibold text-primary-green">hello@shininchrist.com</span>.
             </p>
           </section>
         </div>

@@ -17,6 +17,9 @@ const FooterLinkColumn = ({ title, links }: FooterLinkColumnProps) => (
         <li key={label}>
           <Link
             href={href}
+            {...(href.startsWith("http")
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
             className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm text-white-color/90 transition-colors hover:text-gold-bright lg:text-[15px]"
           >
             {label}

@@ -1,5 +1,5 @@
+import { CONTACT } from "@/constant/contactInfo";
 import {
-  FOOTER_CONTACT,
   FOOTER_EXPLORE,
   FOOTER_INVOLVED,
   FOOTER_LEGAL,
@@ -102,8 +102,8 @@ export const DEFAULTS: {
     involved: FOOTER_INVOLVED.map(simpleLink),
     support: FOOTER_SUPPORT.map(simpleLink),
     legal: FOOTER_LEGAL.map(simpleLink),
-    email: FOOTER_CONTACT.items[0].lines[1],
-    whatsapp: FOOTER_CONTACT.items[1].lines[1],
+    email: CONTACT.email,
+    whatsapp: CONTACT.whatsappNumber,
     social: SOCIAL_LINKS.map(({ id, url, enabled }) => ({ id, url, enabled })),
   },
   header: NAV_ITEMS.map((item) => ({

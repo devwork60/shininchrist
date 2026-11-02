@@ -4,6 +4,7 @@ import { useState } from "react";
 import SectionHeader from "@/components/common-components/SectionHeader";
 import MainHeading from "@/components/pages/typography/MainHeading";
 import Paragraph from "@/components/pages/typography/Paragraph";
+import { CONTACT, emailHref } from "@/constant/contactInfo";
 
 export default function ContactClient() {
   const [formData, setFormData] = useState({
@@ -65,7 +66,9 @@ export default function ContactClient() {
               </div>
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400">Email Address</h4>
-                <p className="mt-1 text-sm font-semibold text-black-color md:text-base">info@shininchrist.org</p>
+                <p className="mt-1 text-sm font-semibold text-black-color md:text-base">
+                  <a href={emailHref(CONTACT.email)} className="underline-offset-4 hover:underline">{CONTACT.email}</a>
+                </p>
                 <p className="text-xs text-stone-500">Official inquiries & correspondence</p>
               </div>
             </div>
@@ -77,9 +80,23 @@ export default function ContactClient() {
                 </svg>
               </div>
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400">WhatsApp Ministry Line</h4>
-                <p className="mt-1 text-sm font-semibold text-black-color md:text-base">+1 (XXX) XXX-XXXX</p>
-                <p className="text-xs text-stone-500">Official ShininChrist communication line</p>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400">{CONTACT.whatsappLabel}</h4>
+                <p className="mt-1 text-sm font-semibold text-black-color md:text-base">
+                  <a href={CONTACT.whatsappUrl} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">{CONTACT.whatsappNumber}</a>
+                </p>
+                <p className="text-xs text-stone-500">Tap the number to open WhatsApp</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 rounded-2xl border border-stone-200 bg-white-color p-5 shadow-sm">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-green/10 text-primary-green">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400">{CONTACT.internationalLabel}</h4>
+                <p className="mt-1 text-sm font-semibold text-black-color md:text-base">{CONTACT.internationalNote}</p>
               </div>
             </div>
 

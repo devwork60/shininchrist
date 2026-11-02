@@ -1,11 +1,12 @@
 import type { AboutIconName } from "@/components/icons/AboutIcons";
+import { CONTACT } from "@/constant/contactInfo";
 
 export const INVITE_HERO = {
   title: ["Invite Mercy", "to Speak"],
   tagline: ["Encouraging hearts. Equipping lives.", "Advancing God’s Kingdom."],
   description:
     "Georgia “Mercy” Morris is available to consider invitations for ministry, speaking, teaching, media, educational, missions, and other appropriate engagements.",
-  image: "/images/about/invite-hero-v2.webp",
+  image: "/images/about/invite-hero-v3.webp",
   quote: "To see lives transformed by Jesus Christ is the greatest privilege.",
   quoteBy: ["Georgia “Mercy”", "Morris"],
 };
@@ -266,7 +267,7 @@ export const INVITE_SIDEBAR = {
   founderTitle: "About Our Founder",
   founderName: ["Georgia “Mercy”", "Morris"],
   founderRoles: "Missionary. Educator. Author. U.S. Army Veteran.",
-  founderImage: "/images/about/invite-card.webp",
+  founderImage: "/images/about/invite-card-v2.webp",
   founderText:
     "Mercy travels globally, sharing the gospel, encouraging believers, and equipping individuals and communities through teaching, media, and missions.",
   cta: { text: "Invite Mercy to Speak", url: "#invite-form" },
@@ -291,6 +292,11 @@ export const INVITE_SIDEBAR = {
       icon: "press" as AboutIconName,
       text: "Media & Press",
       url: "/media-press",
+    },
+    {
+      icon: "globe" as AboutIconName,
+      text: "Mercy Amen (official site)",
+      url: CONTACT.mercyAmenUrl,
     },
     { icon: "phone" as AboutIconName, text: "Contact Us", url: "/contact" },
   ],

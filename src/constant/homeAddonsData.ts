@@ -11,7 +11,7 @@ export const VISION_MISSION = {
   mission: {
     icon: "target" as AboutIconName,
     title: "Our Mission",
-    text: "To advance the Gospel of Jesus Christ beyond the walls of the church through spiritual, educational, and cultural literacy, Christian community, compassionate service, media, and practical resources that equip people to grow in Christ and positively impact their homes, communities, and nations.",
+    text: "Our mission is to advance the gospel of Jesus Christ beyond the walls of the church by promoting spiritual, educational, and cultural literacy; fostering Christian community; providing compassionate service; and using media and practical resources to equip people to grow in Christ and positively impact their homes, communities, and nations.",
   },
 };
 

@@ -1,6 +1,7 @@
 import GiveIcons from "@/components/icons/GiveIcons";
 import ButtonSm from "@/components/button/ButtonSm";
 import CardDescSm from "@/components/pages/typography/CardDescSm";
+import { emailHref, whatsappHref } from "@/constant/contactInfo";
 import { GIVING_PROCESS } from "@/constant/giveData";
 
 const { needAssistance: help } = GIVING_PROCESS;
@@ -37,7 +38,12 @@ const NeedAssistanceCard = () => (
           name="mail"
           className="h-5 w-5 text-primary-green [&>svg]:h-full [&>svg]:w-full"
         />
-        <CardDescSm className="!text-text-dark">Email: {help.email}</CardDescSm>
+        <CardDescSm className="!text-text-dark">
+          Email:{" "}
+          <a href={emailHref(help.email)} className="underline-offset-4 hover:underline">
+            {help.email}
+          </a>
+        </CardDescSm>
       </li>
       <li className="grid grid-cols-[auto_1fr] items-center gap-2">
         <GiveIcons
@@ -45,7 +51,15 @@ const NeedAssistanceCard = () => (
           className="h-5 w-5 text-primary-green [&>svg]:h-full [&>svg]:w-full"
         />
         <CardDescSm className="!text-text-dark">
-          WhatsApp: {help.whatsapp}
+          WhatsApp:{" "}
+          <a
+            href={whatsappHref(help.whatsapp)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline-offset-4 hover:underline"
+          >
+            {help.whatsapp}
+          </a>
         </CardDescSm>
       </li>
     </ul>

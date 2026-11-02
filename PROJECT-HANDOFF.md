@@ -7,7 +7,7 @@ Last updated: 7 Oct 2026. Project folder: `D:\shininchrist`.
 
 ## 1. The project in short
 
-- **Client:** Georgia "Mercy" Nnabuihe (Evangelist Mercy), ShininChrist ministry. Developer contact on Upwork: Imran Nasir.
+- **Client:** Georgia "Mercy" Morris (Evangelist Mercy), ShininChrist ministry. Developer contact on Upwork: Imran Nasir.
 - **Contract:** $500 fixed price, 3 milestones. **Milestone 1 = $200, due 16 Oct 2026** ("Core Platform & Member Onboarding").
 - **Stack:** Next.js 16 (App Router, TypeScript), Tailwind CSS v4, deployed on Vercel. Payments: Paystack (Naira). Google sign-in.
 - **Read first:** `MILESTONE-1-SUMMARY.md` (full scope, conflicts, open questions) and `SKILL.md` (coding rules). `AGENTS.md` warns this Next.js version differs from older docs: read `node_modules/next/dist/docs/` before using unfamiliar APIs.

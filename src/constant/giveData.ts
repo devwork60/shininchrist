@@ -1,3 +1,4 @@
+import { CONTACT } from "@/constant/contactInfo";
 import type { GiveIconName } from "@/components/icons/GiveIcons";
 
 export const GIVE_HERO = {
@@ -182,9 +183,9 @@ export const GIVING_PROCESS = {
   needAssistance: {
     title: "Need Assistance?",
     subtitle: "Our Give Team is here to help.",
-    cta: { text: "Contact Our Give Team", url: "mailto:give@shininchrist.org" },
-    email: "give@shininchrist.org",
-    whatsapp: "+1 (XXX) XXX-XXXX",
+    cta: { text: "Contact Our Give Team", url: `mailto:${CONTACT.email}` },
+    email: CONTACT.email,
+    whatsapp: CONTACT.whatsappNumber,
     footerText: "Let’s make a greater impact together.",
   },
 };

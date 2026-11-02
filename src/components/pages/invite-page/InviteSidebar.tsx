@@ -67,6 +67,9 @@ const InviteSidebar = () => (
           <li key={text}>
             <Link
               href={url}
+              {...(url.startsWith("http")
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
               className="grid grid-cols-[auto_1fr] items-center gap-3 text-sm font-medium text-text-dark transition-colors hover:text-primary-gold"
             >
               <AboutIcons

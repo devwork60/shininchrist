@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/common-components/Breadcrumb";
-import DailyEntriesForm from "@/components/pages/admin-page/content/DailyEntriesForm";
-import DailyTodayForm from "@/components/pages/admin-page/content/DailyTodayForm";
+import DailyEditor from "@/components/pages/admin-page/content/DailyEditor";
 import CardDescSm from "@/components/pages/typography/CardDescSm";
 import MainHeading from "@/components/pages/typography/MainHeading";
 import { getAdminUser } from "@/lib/auth";
@@ -39,9 +38,8 @@ const AdminDailyPage = async () => {
           watch and listen buttons, and the dated devotionals, reflections and assignments
           members read. Changes appear on the public site as soon as you save.
         </CardDescSm>
-        <div className="mt-6 grid gap-6">
-          <DailyTodayForm initial={today} />
-          <DailyEntriesForm initial={entries} />
+        <div className="mt-6">
+          <DailyEditor today={today} entries={entries} />
         </div>
       </div>
     </main>

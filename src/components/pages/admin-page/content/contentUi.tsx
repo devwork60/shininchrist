@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { LinkItem } from "@/lib/site-content-schema";
 
@@ -35,6 +35,7 @@ export const useSection = (sectionKey: string) => {
       text: res.ok ? "Saved. The public page now shows this." : (data.error ?? "Could not save."),
     });
     if (res.ok) router.refresh();
+    return res.ok;
   };
   return { busy, message, save };
 };
@@ -43,12 +44,29 @@ export const SaveBar = ({
   busy,
   message,
   onSave,
+  dirty = false,
 }: {
   busy: boolean;
   message: { ok: boolean; text: string } | null;
   onSave: () => void;
-}) => (
+  /** True while there are changes (a new photo, new text) that visitors cannot see until Save is pressed. */
+  dirty?: boolean;
+}) => {
+  // Warn before leaving the page with changes that were never saved.
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
+
+  return (
   <div className="flex flex-wrap items-center gap-3">
+    {dirty && !busy && (
+      <p role="status" className="w-full rounded-md bg-primary-gold/20 px-3 py-2 text-sm font-semibold text-card-heading">
+        You have unsaved changes. Visitors will not see them until you press “Save changes”.
+      </p>
+    )}
     <button
       type="button"
       onClick={onSave}
@@ -63,7 +81,8 @@ export const SaveBar = ({
       </span>
     )}
   </div>
-);
+  );
+};
 
 export const Section = ({ title, hint, children }: { title: string; hint: string; children: ReactNode }) => (
   <section className="grid min-w-0 gap-4 rounded-xl border border-primary-green/10 bg-white-color p-4 sm:p-5">

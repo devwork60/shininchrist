@@ -1,15 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { DailyEntry } from "@/lib/site-content-schema";
-import {
-  Field,
-  ImageUpload,
-  SaveBar,
-  Section,
-  inputClass,
-  useSection,
-} from "./contentUi";
+import { Field, ImageUpload, Section, inputClass } from "./contentUi";
 
 const small =
   "rounded border border-primary-green/25 px-2 py-1 text-xs font-semibold disabled:opacity-40";
@@ -50,11 +43,18 @@ const newEntry = (): DailyEntry => ({
 });
 
 /** Adds, edits and removes the dated Daily entries (devotional, reflection, assignment, photo, video, link). */
-const DailyEntriesForm = ({ initial }: { initial: DailyEntry[] }) => {
+const DailyEntriesForm = ({
+  initial,
+  onChange,
+}: {
+  initial: DailyEntry[];
+  /** Called with the latest list on every edit; the page saves everything with one button. */
+  onChange: (value: DailyEntry[]) => void;
+}) => {
   const [entries, setEntries] = useState(initial);
+  useEffect(() => onChange(entries), [entries, onChange]);
   const [open, setOpen] = useState<string | null>(null);
   const [query, setQuery] = useState("");
-  const { busy, message, save } = useSection("daily_entries");
 
   const sorted = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -177,7 +177,6 @@ const DailyEntriesForm = ({ initial }: { initial: DailyEntry[] }) => {
         })}
       </div>
 
-      <SaveBar busy={busy} message={message} onSave={() => save({ items: entries })} />
     </Section>
   );
 };

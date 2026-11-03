@@ -10,9 +10,9 @@ export const WOMEN_HERO = {
   quoteReference: "Proverbs 31:25",
   primaryCta: { text: "Join the Women’s Chapter", url: "/join" },
   videoCta: { text: "Watch Video", url: "#chapter-video" },
-  image: "/images/chapters/women-hero.jpg",
+  image: "/images/chapters/women-hero-v5.jpg",
   imageAlt:
-    "A smiling woman filled with joy looking toward a warm golden sunset",
+    "Three women laughing together with their arms around each other on a hilltop at golden sunset",
 };
 
 export const WOMEN_FOCUS: FocusSectionData = {
@@ -91,6 +91,6 @@ export const WOMEN_DAILY: DailyConnectData = {
   description:
     "Explore women’s inspiration, devotionals and resources on I Am Eve.",
   cta: { text: "Visit I Am Eve", url: "/daily" },
-  image: "/images/chapters/women-hero.jpg",
+  image: "/images/chapters/women-hero-v5.jpg",
   accent: "var(--chapter-women, #c96288)",
 };

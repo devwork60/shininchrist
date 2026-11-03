@@ -3,7 +3,7 @@ import type { SupportIconName } from "@/components/icons/SupportIcons";
 export const LEARNER_SUPPORT_HERO = {
   titleLines: ["Learner", "Support"],
   taglineLines: ["Guidance. Resources.", "Encouragement. Always."],
-  image: "/images/learner-support-hero.webp",
+  image: "/images/learner-support-hero-v3.webp",
 };
 
 export interface SupportServiceData {

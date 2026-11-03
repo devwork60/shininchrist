@@ -3,7 +3,7 @@ import type { TeacherIconName } from "@/components/icons/TeacherIcons";
 export const TEACHERS_HERO = {
   titleLines: ["Our", "Teachers"],
   taglineLines: ["Experienced. Passionate.", "Committed to Your Growth."],
-  image: "/images/teachers-hero-v2.webp",
+  image: "/images/teachers-hero-v3.webp",
 };
 
 export const TEACHERS_INTRO = {

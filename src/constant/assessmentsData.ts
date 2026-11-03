@@ -1,7 +1,7 @@
 export const ASSESSMENTS_HERO = {
   titleLines: ["Examination", "Preparation"],
   taglineLines: ["Be Prepared.", "Be Confident.", "Go Further."],
-  image: "/images/assessments-hero.webp",
+  image: "/images/assessments-hero-v3.webp",
 };
 
 export interface ExamData {

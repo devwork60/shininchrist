@@ -10,8 +10,8 @@ export const YOUTH_HERO = {
   quoteReference: "1 Timothy 4:12",
   primaryCta: { text: "Join the Youth Chapter", url: "/join" },
   videoCta: { text: "Watch Video", url: "#chapter-video" },
-  image: "/images/chapters/youth-hero.jpg",
-  imageAlt: "A group of happy, diverse young friends smiling together outdoors",
+  image: "/images/chapters/youth-hero-v5.jpg",
+  imageAlt: "Young people smiling and studying the Bible together at an outdoor table in a garden",
 };
 
 export const YOUTH_FOCUS: FocusSectionData = {
@@ -96,6 +96,6 @@ export const YOUTH_DAILY: DailyConnectData = {
   description:
     "Explore youth inspiration, stories and resources on I Am Called.",
   cta: { text: "Visit I Am Called", url: "/daily" },
-  image: "/images/chapters/youth-hero.jpg",
+  image: "/images/chapters/youth-hero-v5.jpg",
   accent: "var(--chapter-youth, #1d6b63)",
 };

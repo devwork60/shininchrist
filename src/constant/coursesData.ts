@@ -1,7 +1,7 @@
 export const COURSES_HERO = {
   titleLines: ["Our", "Courses"],
   taglineLines: ["Explore. Learn. Grow.", "Make an Impact."],
-  image: "/images/courses-hero.webp",
+  image: "/images/courses-hero-v3.webp",
 };
 
 export const COURSES_BROWSE = {

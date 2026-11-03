@@ -9,7 +9,7 @@ export const ACADEMY_HERO = {
     "ShininChrist Academy provides Christ-centered education for all ages, equipping learners with knowledge, skills and character to make a positive impact in their homes, communities and nations.",
   primaryCta: { text: "Join Academy Today", url: "/join" },
   videoCta: { text: "Watch Academy Video", url: "#academy-video" },
-  image: "/images/academy-hero-students-v2.webp",
+  image: "/images/academy-hero-students-v3.webp",
 };
 
 export const FIELDS_HEADER = {

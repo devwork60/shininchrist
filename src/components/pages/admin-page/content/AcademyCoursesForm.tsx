@@ -62,6 +62,7 @@ const AcademyCoursesForm = ({ initial }: { initial: AcademyCourse[] }) => {
   const [open, setOpen] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const { busy, message, save } = useSection("academy_courses");
+  const [saved, setSaved] = useState(() => JSON.stringify(initial));
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -269,7 +270,14 @@ const AcademyCoursesForm = ({ initial }: { initial: AcademyCourse[] }) => {
         })}
       </div>
 
-      <SaveBar busy={busy} message={message} onSave={() => save({ items: courses })} />
+      <SaveBar
+        busy={busy}
+        message={message}
+        dirty={JSON.stringify(courses) !== saved}
+        onSave={async () => {
+          if (await save({ items: courses })) setSaved(JSON.stringify(courses));
+        }}
+      />
     </Section>
   );
 };

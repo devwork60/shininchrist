@@ -1,20 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type {
   DailyIcon,
   DailyStep,
   DailyTodayContent,
   DailyViewOption,
 } from "@/lib/site-content-schema";
-import {
-  Field,
-  ImageUpload,
-  SaveBar,
-  Section,
-  inputClass,
-  useSection,
-} from "./contentUi";
+import { Field, ImageUpload, Section, inputClass } from "./contentUi";
 
 const MAX_STEPS = 12;
 const ICONS: { value: DailyIcon; label: string }[] = [
@@ -45,10 +38,17 @@ const newStep = (): DailyStep => ({
 });
 
 /** Edits the Daily Today page: the activities (title, order, text, photo, video, button) and the watch / listen options. */
-const DailyTodayForm = ({ initial }: { initial: DailyTodayContent }) => {
+const DailyTodayForm = ({
+  initial,
+  onChange,
+}: {
+  initial: DailyTodayContent;
+  /** Called with the latest content on every edit; the page saves everything with one button. */
+  onChange: (value: DailyTodayContent) => void;
+}) => {
   const [c, setC] = useState(initial);
+  useEffect(() => onChange(c), [c, onChange]);
   const [open, setOpen] = useState<string | null>(initial.steps[0]?.id ?? null);
-  const { busy, message, save } = useSection("daily_today");
 
   const setStep = (id: string, patch: Partial<DailyStep>) =>
     setC((prev) => ({
@@ -201,7 +201,6 @@ const DailyTodayForm = ({ initial }: { initial: DailyTodayContent }) => {
         ))}
       </div>
 
-      <SaveBar busy={busy} message={message} onSave={() => save(c)} />
     </Section>
   );
 };

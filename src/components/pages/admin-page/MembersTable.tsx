@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Applicant } from "@/lib/members-admin";
+import ReceiptReview from "./ReceiptReview";
 
 const badge = (state: string) =>
   state === "verified"
@@ -66,6 +67,7 @@ const MembersTable = ({ applicants }: { applicants: Applicant[] }) => {
       if (statusFilter === "proof_pending" && a.proofStatus !== "pending") return false;
       if (statusFilter === "consent_pending" && a.consentStatus !== "pending") return false;
       if (statusFilter === "payment_pending" && a.uniformPaid) return false;
+      if (statusFilter === "receipt_pending" && a.receipt?.status !== "pending_verification") return false;
       if (statusFilter === "suspended" && a.status !== "suspended") return false;
     }
     if (!search.trim()) return true;
@@ -111,6 +113,7 @@ const MembersTable = ({ applicants }: { applicants: Applicant[] }) => {
               <option value="ready">Ready to Activate</option>
               <option value="proof_pending">Social Proof to Verify</option>
               <option value="consent_pending">Parental Consent to Verify</option>
+              <option value="receipt_pending">Bank Receipt to Verify</option>
               <option value="payment_pending">Uniform Payment Pending</option>
               <option value="suspended">Suspended Members</option>
             </select>
@@ -318,6 +321,11 @@ const MembersTable = ({ applicants }: { applicants: Applicant[] }) => {
                 >
                   {a.uniformPaid ? "confirmed" : "not paid"}
                 </span>
+                {a.receipt && (
+                  <div className="mt-2">
+                    <ReceiptReview receipt={a.receipt} />
+                  </div>
+                )}
               </dd>
             </div>
           </dl>

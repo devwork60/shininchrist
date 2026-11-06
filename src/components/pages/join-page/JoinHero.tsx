@@ -23,10 +23,10 @@ const JoinHero = () => (
         </Paragraph>
       </div>
 
-      <div className="relative min-h-[280px] lg:min-h-[330px] overflow-hidden rounded-xl lg:rounded-none lg:[mask-image:linear-gradient(to_right,transparent,black_18%)]">
+      <div className="relative aspect-square overflow-hidden rounded-xl lg:rounded-none lg:[mask-image:linear-gradient(to_right,transparent,black_18%)]">
         <Image
           src={JOIN_HERO.image}
-          alt="Young ShininChrist members in uniform"
+          alt="Men, women and youth of ShininChrist together, all wearing shirts with the ShininChrist logo"
           fill
           priority
           sizes="(min-width: 1024px) 30vw, 100vw"

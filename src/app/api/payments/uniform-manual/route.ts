@@ -2,6 +2,7 @@ import { after, NextResponse, type NextRequest } from "next/server";
 import { notifyTransferSubmitted } from "@/lib/email/notify";
 import { getCurrentUser } from "@/lib/auth";
 import { paymentErrorResponse } from "@/lib/payments/http";
+import { PaymentInputError } from "@/lib/payments/service";
 import {
   getManualPaymentInfo,
   submitManualPayment,
@@ -28,7 +29,12 @@ export async function POST(request: NextRequest) {
   if (!user)
     return NextResponse.json({ error: "Please sign in first." }, { status: 401 });
   try {
-    const form = await request.formData();
+    // A request too large to read gives a clear message instead of a 500.
+    const form = await request.formData().catch(() => {
+      throw new PaymentInputError(
+        "That file could not be uploaded. It may be too large: please choose a file under 4 MB.",
+      );
+    });
     const field = (name: string) => form.get(name) ?? undefined;
     const result = await submitManualPayment(
       {

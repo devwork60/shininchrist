@@ -96,14 +96,14 @@ export const SOCIAL_LINKS: SocialLink[] = [
     id: "youtube",
     icon: "youtube",
     label: "YouTube",
-    url: "https://youtube.com/@shininchrist",
+    url: CONTACT.youtubeUrl,
     enabled: true,
   },
   {
     id: "facebook",
     icon: "facebook",
     label: "Facebook",
-    url: "https://www.facebook.com/share/1GZbPA9QNH/",
+    url: CONTACT.facebookUrl,
     enabled: true,
   },
   {
@@ -118,8 +118,8 @@ export const SOCIAL_LINKS: SocialLink[] = [
     icon: "tiktok",
     label: "TikTok",
     url: CONTACT.tiktokUrl,
-    // Hidden until the account is confirmed as the official ShininChrist TikTok. Switch on in Admin > Site content.
-    enabled: false,
+    // Official account supplied by the client. Can be switched off in Admin > Site content.
+    enabled: true,
   },
   {
     id: "whatsapp",

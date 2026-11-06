@@ -10,16 +10,18 @@ interface Rules {
   allowedLabel: string;
 }
 
+// Proof and consent files are uploaded through our own server. Vercel rejects request bodies over about 4.5 MB
+// (and Next.js itself only reads the first 10 MB), so the limit stays below that, like the receipts below.
 const RULES: Record<Bucket, Rules> = {
   proofs: {
-    maxBytes: 10 * 1024 * 1024,
-    maxLabel: "10 MB",
+    maxBytes: 4 * 1024 * 1024,
+    maxLabel: "4 MB",
     types: { "image/jpeg": "jpg", "image/png": "png", "application/pdf": "pdf" },
     allowedLabel: "JPG, PNG or PDF",
   },
   consents: {
-    maxBytes: 10 * 1024 * 1024,
-    maxLabel: "10 MB",
+    maxBytes: 4 * 1024 * 1024,
+    maxLabel: "4 MB",
     types: { "image/jpeg": "jpg", "image/png": "png", "application/pdf": "pdf" },
     allowedLabel: "JPG, PNG or PDF",
   },

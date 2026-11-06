@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ButtonOutline from "@/components/button/ButtonOutline";
+import ButtonSm from "@/components/button/ButtonSm";
 import Breadcrumb from "@/components/common-components/Breadcrumb";
 import CardDescSm from "@/components/pages/typography/CardDescSm";
 import MainHeading from "@/components/pages/typography/MainHeading";
@@ -195,12 +197,32 @@ const CoursePage = async ({ params }: PageProps<"/academy/courses/[id]">) => {
                       ? "Lessons, resources and assignments open once your membership is active. Complete your registration to continue."
                       : "Lessons, resources and assignments are for active ShininChrist members. Join or log in to learn."}
                   </p>
-                  <Link
-                    href={signedIn ? "/account" : "/join"}
-                    className="mt-3 inline-flex rounded-lg bg-primary-green px-5 py-2.5 text-sm font-semibold text-white-color hover:opacity-90"
-                  >
-                    {signedIn ? "Go to my account" : "Join ShininChrist"}
-                  </Link>
+                  {signedIn ? (
+                    <Link
+                      href="/account"
+                      className="mt-3 inline-flex rounded-lg bg-primary-green px-5 py-2.5 text-sm font-semibold text-white-color hover:opacity-90"
+                    >
+                      Go to my account
+                    </Link>
+                  ) : (
+                    // New visitors join; existing members log in with the site's normal Google sign-in and
+                    // come back to this course afterwards. Signing in alone does not unlock the lessons.
+                    <div className="mt-4 grid max-w-md gap-3 sm:grid-cols-2">
+                      <ButtonSm
+                        url="/join"
+                        text="Join ShininChrist"
+                        bgColor="var(--primary-green)"
+                        textColor="var(--white-color)"
+                        shape="rounded"
+                      />
+                      <ButtonOutline
+                        url={`/login?next=${encodeURIComponent(`/academy/courses/${course.id}`)}`}
+                        text="Log in"
+                        borderColor="var(--primary-green)"
+                        shape="rounded"
+                      />
+                    </div>
+                  )}
                 </div>
               </>
             )}

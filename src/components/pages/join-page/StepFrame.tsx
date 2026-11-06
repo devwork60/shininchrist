@@ -45,7 +45,12 @@ const StepFrame = ({
   };
 
   return (
-    <form onSubmit={submit} className="grid gap-5">
+    <form
+      onSubmit={submit}
+      // A message about a field disappears as soon as the person changes something.
+      onChange={() => setError("")}
+      className="grid gap-5"
+    >
       <div>
         <h2 className="font-heading text-2xl font-semibold text-primary-green">
           {title}

@@ -1,7 +1,7 @@
 import { after, NextResponse, type NextRequest } from "next/server";
 import { notifyItemSubmitted } from "@/lib/email/notify";
 import { JoinInputError } from "@/lib/join";
-import { joinErrorResponse, requireUser } from "@/lib/join-http";
+import { joinErrorResponse, readUploadForm, requireUser } from "@/lib/join-http";
 import { prisma } from "@/lib/prisma";
 import { uploadPrivateFile } from "@/lib/uploads";
 
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const form = await request.formData();
+    const form = await readUploadForm(request);
     const path = await uploadPrivateFile(
       "consents",
       auth.user.id,

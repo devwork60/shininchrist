@@ -12,8 +12,11 @@ export const CONTACT = {
   internationalNote: "Number to be announced soon.",
   /** Evangelist Mercy's own ministry website (music, media, invitations). Opens in a new tab. */
   mercyAmenUrl: "https://mercyamen.com",
+  /** Official social accounts, as supplied by the client (Nov 2026). Used by the footer and the Join page. */
+  youtubeUrl: "https://www.youtube.com/@ShininChrist",
+  facebookUrl: "http://web.facebook.com/share/1C7kAWKFyn/?mibextid=wwXIfr",
   instagramUrl: "https://www.instagram.com/shininchrist/",
-  tiktokUrl: "https://www.tiktok.com/@shininchrist",
+  tiktokUrl: "https://www.tiktok.com/@shininchrist1",
 };
 
 export const emailHref = (address: string) => `mailto:${address}`;

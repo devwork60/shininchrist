@@ -18,7 +18,7 @@ const StepSubscribe = ({
 }: StepSubscribeProps) => (
   <StepFrame
     title="Subscribe to Social Community"
-    description="To join ShininChrist, complete at least one of the following. You are welcome to connect on more than one platform."
+    description="Follow ShininChrist on YouTube, Facebook, Instagram or TikTok. Complete at least one of these actions and upload a screenshot as proof during registration. You do not need to do all four, but you are welcome to connect on more than one platform."
     onNext={() => {
       if (!platform)
         throw new Error(

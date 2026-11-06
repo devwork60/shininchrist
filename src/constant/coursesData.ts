@@ -72,7 +72,7 @@ export const COURSE_SUBJECTS: CourseSubject[] = [
     "Digital Technologies",
     "Computer Science",
   ]),
-  ...subjects("life", "Life Skills & Practical Skills", [
+  ...subjects("life", "Literacy and Life Skills", [
     "Financial Literacy",
     "Entrepreneurship",
     "Communication",

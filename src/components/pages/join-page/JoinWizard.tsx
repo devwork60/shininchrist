@@ -170,6 +170,7 @@ const JoinWizard = () => {
         {status.signedIn && step === "uniform" && (
           <StepUniform
             details={uniform}
+            country={status.profile.country}
             onSave={(details) => {
               setUniform(details);
               next();

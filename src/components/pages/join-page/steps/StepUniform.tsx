@@ -16,11 +16,18 @@ export interface UniformDetails {
 
 interface StepUniformProps {
   details: UniformDetails | null;
+  /** The country chosen in the registration form. The price and the currency depend on it. */
+  country?: string | null;
   onSave: (details: UniformDetails) => void;
   onBack: () => void;
 }
 
-const StepUniform = ({ details, onSave, onBack }: StepUniformProps) => (
+const StepUniform = ({
+  details,
+  country,
+  onSave,
+  onBack,
+}: StepUniformProps) => (
   <StepFrame
     title="Request Your ShininChrist Uniform"
     description="The uniform is part of completing your registration. Choose your type and size, then tell us where to deliver it."
@@ -61,6 +68,14 @@ const StepUniform = ({ details, onSave, onBack }: StepUniformProps) => (
       />
     </div>
     <div className="grid gap-4 sm:grid-cols-2">
+      <JoinField
+        id="country"
+        label="Country (from your registration form)"
+        span={2}
+        required={false}
+        readOnly
+        defaultValue={country ?? ""}
+      />
       <JoinField
         id="deliveryType"
         label="Delivery Type"

@@ -10,6 +10,8 @@ interface JoinFieldProps {
   span?: 1 | 2;
   /** Starting value (saved data when the applicant comes back). */
   defaultValue?: string;
+  /** Shows the value but does not let the applicant change it. */
+  readOnly?: boolean;
   /** Controlled mode, used by the date of birth so the form can react to age as it is typed. */
   value?: string;
   onChange?: (value: string) => void;
@@ -27,6 +29,7 @@ const JoinField = ({
   required = true,
   span = 1,
   defaultValue,
+  readOnly,
   value,
   onChange,
 }: JoinFieldProps) => (
@@ -73,8 +76,9 @@ const JoinField = ({
         required={required}
         placeholder={placeholder}
         defaultValue={defaultValue}
+        readOnly={readOnly}
         min={type === "number" ? 1 : undefined}
-        className={control}
+        className={readOnly ? clsx(control, "cursor-not-allowed bg-cream") : control}
       />
     )}
   </div>

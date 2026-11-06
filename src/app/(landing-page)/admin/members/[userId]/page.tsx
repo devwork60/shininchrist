@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/common-components/Breadcrumb";
 import MemberAccessPanel from "@/components/pages/admin-page/MemberAccessPanel";
 import OrderStatusControl from "@/components/pages/admin-page/OrderStatusControl";
 import ChapterSelectControl from "@/components/pages/admin-page/ChapterSelectControl";
+import ReceiptReview from "@/components/pages/admin-page/ReceiptReview";
 import MainHeading from "@/components/pages/typography/MainHeading";
 import { countryName } from "@/constant/countries";
 import { getAdminUser } from "@/lib/auth";
@@ -281,6 +282,11 @@ const MemberDetailPage = async ({
                       {p.verifiedAt &&
                         ` · verified ${date(p.verifiedAt, true)}`}
                     </p>
+                    {p.receipt && (
+                      <div className="mt-2 border-t border-primary-green/10 pt-2">
+                        <ReceiptReview receipt={p.receipt} />
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>

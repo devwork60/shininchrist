@@ -8,7 +8,7 @@ export const JOIN_HERO = {
   subtitle: "A Step-by-Step Process",
   description:
     "Become a part of the ShininChrist family. Follow these simple steps to complete your registration and gain access to member benefits, resources, and community.",
-  image: "/images/join/hero-v2.webp",
+  image: "/images/join/registration-image.webp",
 };
 
 export const JOIN_NEEDS = {
@@ -54,7 +54,7 @@ export const JOIN_GLANCE: JoinGlanceStep[] = [
   },
   {
     title: "Subscribe to Social Community",
-    text: "Complete at least one: subscribe to the official ShininChrist YouTube channel, or follow the official Facebook page.",
+    text: "Follow ShininChrist on YouTube, Facebook, Instagram or TikTok. Complete at least one of these actions and upload a screenshot as proof during registration.",
     note: "One platform is required.",
   },
   {
@@ -90,7 +90,7 @@ export const JOIN_GLANCE: JoinGlanceStep[] = [
     list: [
       "Registration information completed",
       "Parental consent (if under 18)",
-      "YouTube subscription proof",
+      "Social community subscription or follow proof",
       "Uniform requested",
       "Payment confirmed",
     ],
@@ -143,22 +143,27 @@ export const JOIN_LINKS = {
 };
 
 /**
- * Official channels people can subscribe to or follow on the Subscribe step, one list per platform.
- * An empty list shows "link coming soon". The addresses are the official pages without share-tracking parts.
+ * Official accounts people can subscribe to or follow on the Subscribe step, one list per platform.
+ * An empty list shows "link coming soon". These are the addresses supplied by the client (Nov 2026).
  */
 export const JOIN_CHANNELS: Record<
-  "youtube" | "facebook",
+  "youtube" | "facebook" | "instagram" | "tiktok",
   { label: string; url: string }[]
 > = {
   youtube: [
-    { label: "ShininChrist", url: "https://youtube.com/@shininchrist" },
-    { label: "Mercy Amen", url: "https://youtube.com/@officialmercyamen" },
+    { label: "ShininChrist", url: CONTACT.youtubeUrl },
   ],
   facebook: [
     {
       label: "ShininChrist",
-      url: "https://www.facebook.com/share/1GZbPA9QNH/",
+      url: CONTACT.facebookUrl,
     },
+  ],
+  instagram: [
+    { label: "ShininChrist", url: CONTACT.instagramUrl },
+  ],
+  tiktok: [
+    { label: "ShininChrist", url: CONTACT.tiktokUrl },
   ],
 };
 
@@ -182,13 +187,25 @@ export const SOCIAL_OPTIONS = [
     id: "youtube",
     label: "YouTube",
     action: "Subscribe on YouTube",
-    hint: "Subscribe to the official ShininChrist and Mercy Amen YouTube channels.",
+    hint: "Subscribe to the official ShininChrist YouTube channel.",
   },
   {
     id: "facebook",
     label: "Facebook",
     action: "Follow on Facebook",
     hint: "Follow the official ShininChrist Facebook page.",
+  },
+  {
+    id: "instagram",
+    label: "Instagram",
+    action: "Follow on Instagram",
+    hint: "Follow the official ShininChrist Instagram account.",
+  },
+  {
+    id: "tiktok",
+    label: "TikTok",
+    action: "Follow on TikTok",
+    hint: "Follow the official ShininChrist TikTok account.",
   },
 ] as const;
 

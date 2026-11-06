@@ -5,7 +5,7 @@ import {
   JoinInputError,
   missingProfileFields,
 } from "@/lib/join";
-import { joinErrorResponse, requireUser } from "@/lib/join-http";
+import { joinErrorResponse, readUploadForm, requireUser } from "@/lib/join-http";
 import { prisma } from "@/lib/prisma";
 import { uploadPrivateFile } from "@/lib/uploads";
 
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
   const auth = await requireUser();
   if (auth.response) return auth.response;
   try {
-    const form = await request.formData();
+    const form = await readUploadForm(request);
     const platform = String(form.get("platform") ?? "");
     if (!(PLATFORMS as readonly string[]).includes(platform)) {
       throw new JoinInputError(

@@ -68,8 +68,12 @@ export const FIELDS: FieldData[] = [
   {
     id: "life",
     icon: "gears",
-    title: "Life Skills & Practical Skills",
-    description: ["Prepare. Apply.", "Thrive."],
+    title: "Literacy and Life Skills",
+    description: [
+      "Cultural Literacy.",
+      "Spiritual Literacy.",
+      "Practical Life Skills.",
+    ],
     accent: "var(--field-life)",
   },
 ];

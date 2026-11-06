@@ -1,6 +1,7 @@
 import { COUNTRIES } from "@/constant/countries";
 import { JoinInputError, missingProfileFields } from "@/lib/join";
 import { prisma } from "@/lib/prisma";
+import type { ReceiptInfo } from "@/components/pages/admin-page/ReceiptReview";
 import { createClient } from "@/lib/supabase/server";
 
 /** Admin-only member review. Callers MUST check getAdminUser() first; nothing here checks the role. */
@@ -21,6 +22,8 @@ export interface Applicant {
   memberId: string | null;
   proofUrl: string | null;
   consentUrl: string | null;
+  /** The member's latest bank-transfer receipt for the uniform, if they paid that way. */
+  receipt: ReceiptInfo | null;
   /** Everything the Join guide requires is confirmed, so the member can be activated. */
   ready: boolean;
   /** What is still missing before activation, in plain words (empty when ready). */
@@ -44,7 +47,7 @@ export const listApplicants = async (): Promise<Applicant[]> => {
   });
   const ids = memberships.map((m) => m.user_id);
 
-  const [profiles, paid] = await Promise.all([
+  const [profiles, paid, transfers] = await Promise.all([
     prisma.profiles.findMany({ where: { id: { in: ids } } }),
     prisma.payments.groupBy({
       by: ["user_id"],
@@ -56,10 +59,33 @@ export const listApplicants = async (): Promise<Applicant[]> => {
       },
       _count: { _all: true },
     }),
+    // Bank-transfer receipts (the payment screenshot), newest first, so the latest one per member is used below.
+    prisma.payments.findMany({
+      where: {
+        user_id: { in: ids },
+        purpose: "uniform",
+        gateway: "bank_transfer",
+        receipt_path: { not: null },
+        status: { in: ["pending_verification", "confirmed", "rejected"] },
+      },
+      orderBy: { submitted_at: "desc" },
+    }),
   ]);
 
   return Promise.all(
     memberships.map(async (m) => {
+      const transfer = transfers.find((t) => t.user_id === m.user_id);
+      const receipt: ReceiptInfo | null = transfer
+        ? {
+            paymentId: transfer.id,
+            status: transfer.status,
+            url: await signed("receipts", transfer.receipt_path),
+            amount: Number(transfer.amount),
+            currency: transfer.currency,
+            submittedAt: transfer.submitted_at ? transfer.submitted_at.toISOString() : null,
+            reason: transfer.rejection_reason,
+          }
+        : null;
       const profile = profiles.find((p) => p.id === m.user_id);
       const uniformPaid = paid.some((p) => p.user_id === m.user_id);
       const formMissing = missingProfileFields(profile ?? null);
@@ -79,7 +105,13 @@ export const listApplicants = async (): Promise<Applicant[]> => {
         ...(!m.is_minor || m.consent_status === "verified"
           ? []
           : ["parental consent not verified"]),
-        ...(uniformPaid ? [] : ["uniform payment not confirmed"]),
+        ...(uniformPaid
+          ? []
+          : [
+              receipt?.status === "pending_verification"
+                ? "bank transfer receipt to verify"
+                : "uniform payment not confirmed",
+            ]),
       ];
       const ready = missing.length === 0;
 
@@ -99,6 +131,7 @@ export const listApplicants = async (): Promise<Applicant[]> => {
         memberId: m.member_id,
         proofUrl: await signed("proofs", m.proof_path),
         consentUrl: await signed("consents", m.consent_path),
+        receipt,
         ready,
         missing,
       };
@@ -304,6 +337,8 @@ export interface MemberDetail {
     status: string;
     verifiedAt: Date | null;
     createdAt: Date;
+    /** Bank-transfer receipt details (null for card payments). */
+    receipt: ReceiptInfo | null;
   }[];
   sessions: { count: number; lastActive: Date | null };
   activity: { action: string; actor: string; at: Date; details: unknown }[];
@@ -419,7 +454,7 @@ export const getMemberDetail = async (
       phone: o.delivery_phone,
       createdAt: o.created_at,
     })),
-    payments: payments.map((p) => ({
+    payments: await Promise.all(payments.map(async (p) => ({
       id: p.id,
       reference: p.internal_ref,
       gatewayRef: p.gateway_ref,
@@ -430,7 +465,18 @@ export const getMemberDetail = async (
       status: p.status,
       verifiedAt: p.verified_at,
       createdAt: p.created_at,
-    })),
+      receipt: p.receipt_path
+        ? {
+            paymentId: p.id,
+            status: p.status,
+            url: await signed("receipts", p.receipt_path),
+            amount: Number(p.amount),
+            currency: p.currency,
+            submittedAt: p.submitted_at ? p.submitted_at.toISOString() : null,
+            reason: p.rejection_reason,
+          }
+        : null,
+    }))),
     sessions: {
       count: sessions._count._all,
       lastActive: sessions._max.updated_at,

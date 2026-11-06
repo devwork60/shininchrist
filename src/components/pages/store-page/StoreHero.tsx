@@ -19,21 +19,17 @@ const StoreHero: React.FC<StoreHeroProps> = ({
       fill
       priority
       sizes="100vw"
-      className="-z-10 object-cover opacity-30 object-right"
+      className="-z-10 object-cover object-right brightness-[1.08] contrast-[1.06]"
     />
     {/* Dark Gradient Overlay */}
     <div
       aria-hidden="true"
-      className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(18,38,28,0.92)_0%,rgba(18,38,28,0.85)_40%,rgba(18,38,28,0.45)_100%)] max-md:bg-[linear-gradient(180deg,rgba(18,38,28,0.9)_0%,rgba(18,38,28,0.95)_100%)]"
+      className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(18,38,28,0.74)_0px,rgba(18,38,28,0.64)_560px,rgba(18,38,28,0.20)_780px,rgba(18,38,28,0.12)_1300px)] max-md:bg-[linear-gradient(180deg,rgba(18,38,28,0.4)_0%,rgba(18,38,28,0.3)_100%)]"
     />
 
     <div className="wrapper py-12 sm:py-16 lg:py-20">
       <div className="max-w-2xl text-left">
-        <p className="text-xs font-bold tracking-widest uppercase text-[var(--gold-bright)]">
-          {STORE_HERO.badge}{" "}
-          <span className="normal-case opacity-90">{STORE_HERO.subbadge}</span>
-        </p>
-        <h1 className="mt-2 font-serif text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
+        <h1 className="font-serif text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
           {STORE_HERO.title}
         </h1>
         <p className="mt-3 text-base font-normal text-white/90 sm:text-lg sm:leading-relaxed">

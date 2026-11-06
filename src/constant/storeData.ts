@@ -1,10 +1,10 @@
 export const STORE_HERO = {
-  badge: "STORE (PUBLIC)",
-  subbadge: "(Open to Everyone)",
   title: "ShininChrist Store",
   tagline: "Books. Music. Merchandise. Resources. Shop with Purpose.",
   searchPlaceholder: "Search products...",
-  image: "/images/library-hero.webp",
+  // A crop of the library photograph (Bible, laptop, mug, journal) that leaves out the "ShininChrist Library" wording
+  // on the laptop screen. The full photograph (library-hero.webp) is still used by the Library pages.
+  image: "/images/store/store-hero.webp",
 };
 
 export type StoreCategory =

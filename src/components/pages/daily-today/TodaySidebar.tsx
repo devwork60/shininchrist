@@ -6,7 +6,7 @@ import UiIcons from "@/components/icons/UiIcons";
 import Eyebrow from "@/components/pages/typography/Eyebrow";
 import QuoteText from "@/components/pages/typography/QuoteText";
 import type { DailyTodayContent } from "@/lib/site-content-schema";
-import ShareButton from "./ShareButton";
+import ShareDaily from "./ShareDaily";
 
 const BASE =
   "flex items-center gap-3 rounded-xl px-5 py-4 text-base font-semibold transition-colors";
@@ -66,7 +66,11 @@ const TodaySidebar = ({ content }: { content: DailyTodayContent }) => (
         </Link>
       ))}
 
-    <ShareButton label="Share This Daily" className={clsx(BASE, TONES.grey, "w-full text-left")} />
+    <ShareDaily
+      title={`ShininChrist Daily: ${content.title}${content.verseReference ? ` – ${content.verseReference}` : ""}`}
+      label="Share This Daily"
+      className={clsx(BASE, TONES.grey, "w-full text-left")}
+    />
 
     <Link href="/join" className={clsx(BASE, TONES.mint, "mt-5")}>
       <UiIcons name="shield" />

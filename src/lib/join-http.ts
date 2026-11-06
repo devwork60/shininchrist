@@ -17,6 +17,20 @@ export const requireUser = async () => {
   return { user, response: null } as const;
 };
 
+/**
+ * Reads an upload form. A request that is too large to read (or is cut off) gives the person a clear message,
+ * instead of a 500 "something went wrong".
+ */
+export const readUploadForm = async (request: Request) => {
+  try {
+    return await request.formData();
+  } catch {
+    throw new JoinInputError(
+      "That file could not be uploaded. It may be too large: please choose a file under 4 MB.",
+    );
+  }
+};
+
 export const joinErrorResponse = (error: unknown) => {
   if (error instanceof JoinInputError) {
     return NextResponse.json({ error: error.message }, { status: 400 });

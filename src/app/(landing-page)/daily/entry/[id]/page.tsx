@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/common-components/Breadcrumb";
 import MembersGate from "@/components/common-components/MembersGate";
 import UiIcons from "@/components/icons/UiIcons";
+import ShareDaily from "@/components/pages/daily-today/ShareDaily";
 import CardDescSm from "@/components/pages/typography/CardDescSm";
 import MainHeading from "@/components/pages/typography/MainHeading";
 import { getCurrentUser, getMemberAccess } from "@/lib/auth";
@@ -160,6 +161,14 @@ const DailyEntryPage = async ({ params }: PageProps<"/daily/entry/[id]">) => {
           >
             Back to the archive
           </Link>
+        </div>
+
+        <div className="mt-6 max-w-md">
+          <ShareDaily
+            title={`ShininChrist Daily: ${entry.title}${entry.scripture ? ` (${entry.scripture})` : ""}`}
+            label="Share this Daily"
+            className="inline-flex w-full items-center gap-2 rounded-lg border border-primary-green/30 px-5 py-3 text-sm font-semibold text-primary-green hover:bg-primary-green/5"
+          />
         </div>
       </article>
     </main>

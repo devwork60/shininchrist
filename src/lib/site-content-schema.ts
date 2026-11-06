@@ -255,11 +255,11 @@ export const DEFAULTS: {
       icon: step.button.icon,
     })),
     viewOptions: [
-      { id: "youtube", label: "Watch on YouTube", url: "https://youtube.com/@shininchrist", enabled: true },
-      { id: "facebook", label: "Watch on Facebook", url: "https://www.facebook.com/share/1GZbPA9QNH/", enabled: true },
+      // The four official accounts supplied by the client (one place: CONTACT in contactInfo.ts).
+      { id: "youtube", label: "Watch on YouTube", url: CONTACT.youtubeUrl, enabled: true },
+      { id: "facebook", label: "Watch on Facebook", url: CONTACT.facebookUrl, enabled: true },
       { id: "instagram", label: "Watch on Instagram", url: CONTACT.instagramUrl, enabled: true },
-      // Hidden until the TikTok account is confirmed as the official one.
-      { id: "tiktok", label: "Watch on TikTok", url: CONTACT.tiktokUrl, enabled: false },
+      { id: "tiktok", label: "Watch on TikTok", url: CONTACT.tiktokUrl, enabled: true },
       // Hidden until an audio address is added.
       { id: "audio", label: "Listen to Audio Only", url: "", enabled: false },
     ],

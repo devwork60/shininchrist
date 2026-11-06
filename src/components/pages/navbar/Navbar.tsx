@@ -91,11 +91,9 @@ const Navbar = ({ items }: { items: NavItem[] }) => {
           ) : (
             <Link
               href={LOGIN_CTA.href}
-              aria-label={LOGIN_CTA.label}
-              title={LOGIN_CTA.label}
-              className="hidden h-10 w-10 items-center justify-center text-[var(--primary-green)] transition-colors hover:text-[var(--primary-gold)] lg:inline-flex"
+              className="hidden h-10 items-center justify-center whitespace-nowrap px-2 text-[15px] font-semibold text-[var(--primary-green)] transition-colors hover:text-[var(--primary-gold)] lg:inline-flex lg:max-xl:text-[13px]"
             >
-              <UiIcons name="user" />
+              {LOGIN_CTA.label}
             </Link>
           )}
           <div className="hidden sm:block">
